@@ -73,7 +73,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         Book book = data.get(position);
         holder.bookName.setText(book.getName());
         holder.author.setText(book.getAuthor());
-        holder.addTime.setText(book.getTime());
+        holder.addTime.setText(book.getAddTime());
         int progress = book.getPage() / book.getProgress();
         holder.readProgress.setProgress(progress);
         holder.progressNumber.setText(book.getProgress()+"/"+ book.getPage());

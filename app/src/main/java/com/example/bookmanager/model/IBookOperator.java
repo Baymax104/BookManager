@@ -10,8 +10,8 @@ import com.example.bookmanager.domain.Book;
  * @Version
  */
 public interface IBookOperator {
-    void insert(Book book, BookListener listener);
-    void query(BookListener listener);
+    void insert(Book book, BookOperatorListener listener);
+    void query(BookOperatorListener listener);
     void update();
     void delete(Book book);
     void swap();

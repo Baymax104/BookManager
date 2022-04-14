@@ -21,12 +21,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmanager.R;
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.model.BookErrorType;
+import com.example.bookmanager.model.BookOperator;
+import com.example.bookmanager.model.BookOperatorListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -34,14 +36,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BookOperatorListener {
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     NavigationView leftMenu;
     FloatingActionButton floatingAdd;
     RecyclerView bookList;
-    List<Book> data;
-    BookAdapter adapter;
+    List<Book> data = new ArrayList<>();
+    BookAdapter adapter = new BookAdapter(this, data, false);
+    BookOperator operator = new BookOperator(this);
 
     private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -59,11 +62,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        data = new ArrayList<>();
-        testData();
+        // 查询数据库获取数据
+        operator.query(this);
 
         // RecyclerView绑定
-        adapter = new BookAdapter(this, data, false);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         bookList.setLayoutManager(linearLayout);
         bookList.setAdapter(adapter);
@@ -93,22 +95,6 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-    }
-
-    void testData() {
-        data.add(new Book("第一本书", "2022-4-13", "佚名", 20, 100));
-        data.add(new Book("第二本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第三本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第四本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第五本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第六本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第七本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第八本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第九本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第十本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第十一本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第十二本书", "2022-4-13", "佚名",20, 100));
-        data.add(new Book("第十三本书", "2022-4-13", "佚名",20, 100));
     }
 
     @Override
@@ -155,5 +141,17 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
         });
         dialog.show();
+    }
+
+    @Override
+    public void onSuccess(List<Book> data) {
+        this.data = data;
+        adapter.setData(data);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onError(BookErrorType resultType) {
+
     }
 }

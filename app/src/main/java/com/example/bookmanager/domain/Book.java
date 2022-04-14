@@ -11,16 +11,16 @@ import java.io.Serializable;
  */
 public class Book implements Serializable {
     private String name;
-    private String time;
     private String author;
+    private String addTime;
     private int progress;
     private int page;
 
     public Book() {}
 
-    public Book(String name, String time, String author, int progress, int page) {
+    public Book(String name, String author, String addTime, int progress, int page) {
         this.name = name;
-        this.time = time;
+        this.addTime = addTime;
         this.author = author;
         this.progress = progress;
         this.page = page;
@@ -42,12 +42,12 @@ public class Book implements Serializable {
         this.name = name;
     }
 
-    public String getTime() {
-        return time;
+    public String getAddTime() {
+        return addTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setAddTime(String addTime) {
+        this.addTime = addTime;
     }
 
     public int getProgress() {

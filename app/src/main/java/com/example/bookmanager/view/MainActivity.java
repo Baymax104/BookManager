@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -136,7 +137,13 @@ public class MainActivity extends AppCompatActivity {
     private void showAddDialog() {
         View view = LayoutInflater.from(this).inflate(R.layout.add_book_dialog, null, false);
         AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
+        // 设置对话框背景为透明
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        // 设置对话框透明度
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.alpha = 0.8f;
+        dialog.getWindow().setAttributes(params);
+
         TextView manualAdd = view.findViewById(R.id.manual_add);
         TextView scanAdd = view.findViewById(R.id.scan_add);
         manualAdd.setOnClickListener(v -> {

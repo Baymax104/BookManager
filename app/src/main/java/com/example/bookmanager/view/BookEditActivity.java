@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,7 +69,8 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
             actionBar.setDisplayShowTitleEnabled(false);
         }
         Intent intent = getIntent();
-        data = (List<Book>) intent.getSerializableExtra("BookData");
+        Book[] passData = (Book[]) intent.getSerializableExtra("BookData");
+        data = Arrays.asList(passData);
         Toast.makeText(this, "滑动删除，拖动排序哦~", Toast.LENGTH_SHORT).show();
         // 修改状态栏为亮色主题
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -99,7 +101,8 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OK, new Intent().putExtra("BookData", (Serializable) data));
+        Book[] passData = (Book[]) data.toArray();
+        setResult(RESULT_OK, new Intent().putExtra("BookData", passData));
         super.onBackPressed();
     }
 
@@ -107,7 +110,8 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            setResult(RESULT_OK, new Intent().putExtra("BookData", (Serializable) data));
+            Book[] passData = (Book[]) data.toArray();
+            setResult(RESULT_OK, new Intent().putExtra("BookData", passData));
             finish();
         }
         return true;

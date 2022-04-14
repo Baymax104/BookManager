@@ -34,6 +34,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements BookOperatorListener {
@@ -49,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    List<Book> newData = (List<Book>) result.getData().getSerializableExtra("BookData");
-                    data = newData;
-                    adapter.setData(newData);
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Book[] passData = (Book[]) result.getData().getSerializableExtra("BookData");
+                    data = Arrays.asList(passData);
+                    adapter.setData(data);
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -114,7 +115,8 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
             drawerLayout.openDrawer(GravityCompat.START);
         } else if (id == R.id.edit_list) {
             Intent intent = new Intent(this, BookEditActivity.class);
-            intent.putExtra("BookData", (Serializable) data);
+            Book[] passData = (Book[]) data.toArray();
+            intent.putExtra("BookData", passData);
             launcher.launch(intent);
         }
         return true;

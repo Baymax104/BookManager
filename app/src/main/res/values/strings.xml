@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BookManager</string>
+    <string name="nav_settings">设置</string>
+    <string name="nav_about">关于</string>
+    <string name="nav_read">我读过的书</string>
+    <string name="add_book">添加</string>
+    <string name="sort">sort</string>
+    <string name="edit">编辑</string>
+    <string name="more">更多</string>
+    <string name="select_add_way">请选择添加方式</string>
+    <string name="scan_add">扫码录入</string>
+    <string name="manual_add">手动录入</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/edit_list"
+            android:title="@string/edit"
+            android:icon="@drawable/edit_list"
+            app:showAsAction="ifRoom"/>
+    <item
+            android:id="@+id/more_menu"
+            android:title="@string/more"
+            android:icon="@drawable/more"
+            app:showAsAction="always">
+        <menu>
+            <item
+                    android:id="@+id/read"
+                    android:title="@string/nav_read"
+                    android:icon="@drawable/read"
+                    app:showAsAction="never"/>
+
+            <item
+                    android:id="@+id/settings"
+                    android:title="@string/nav_settings"
+                    android:icon="@drawable/settings"
+                    app:showAsAction="never"/>
+        </menu>
+
+    </item>
+
+
+</menu>

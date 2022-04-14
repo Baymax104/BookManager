@@ -26,19 +26,24 @@ import android.widget.Toast;
 
 import com.example.bookmanager.R;
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.model.BookErrorType;
+import com.example.bookmanager.model.BookOperator;
+import com.example.bookmanager.model.BookOperatorListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipeCallback {
+public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipeCallback, BookOperatorListener {
 
     private RecyclerView bookList;
-    private BookAdapter adapter;
-    private List<Book> data;
+    private List<Book> data = new ArrayList<>();
+    private BookAdapter adapter = new BookAdapter(this, data, true);
+    private BookOperator operator = new BookOperator(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +54,6 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
 
 
         // 绑定RecyclerView和关联拖动接口
-        adapter = new BookAdapter(this, data, true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         bookList.setLayoutManager(layoutManager);
         bookList.setAdapter(adapter);
@@ -73,6 +77,7 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
         Intent intent = getIntent();
         Book[] passData = (Book[]) intent.getSerializableExtra("BookData");
         data = Arrays.asList(passData);
+        adapter.setData(data);
         Toast.makeText(this, "滑动删除，拖动排序哦~", Toast.LENGTH_SHORT).show();
         // 修改状态栏为亮色主题
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -97,13 +102,12 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
                                         adapter.notifyItemInserted(position);
                                     });
         snackbar.show();
-        data.remove(position);
-        adapter.notifyItemRemoved(position);
+        operator.delete(deletedBook, this);
     }
 
     @Override
     public void onBackPressed() {
-        Book[] passData = (Book[]) data.toArray();
+        Book[] passData = data.toArray(new Book[0]);
         setResult(RESULT_OK, new Intent().putExtra("BookData", passData));
         super.onBackPressed();
     }
@@ -112,11 +116,22 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            Book[] passData = (Book[]) data.toArray();
+            Book[] passData = data.toArray(new Book[0]);
             setResult(RESULT_OK, new Intent().putExtra("BookData", passData));
             finish();
         }
         return true;
     }
 
+    @Override
+    public void onSuccess(List<Book> data) {
+        this.data = data;
+        adapter.setData(data);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onError(BookErrorType resultType) {
+
+    }
 }

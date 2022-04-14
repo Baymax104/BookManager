@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
             drawerLayout.openDrawer(GravityCompat.START);
         } else if (id == R.id.edit_list) {
             Intent intent = new Intent(this, BookEditActivity.class);
-            Book[] passData = (Book[]) data.toArray();
+            Book[] passData = data.toArray(new Book[0]);
             intent.putExtra("BookData", passData);
             launcher.launch(intent);
         }

@@ -94,8 +94,26 @@ public class BookOperator implements IBookOperator {
     }
 
     @Override
-    public void delete(Book book) {
-
+    public void delete(Book book, BookOperatorListener listener) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        List<Book> data;
+        boolean resultFlag = false;
+        int row = db.delete("Book", "name=? and author=?", new String[]{
+                book.getName(),
+                book.getAuthor()
+        });
+        if (row != 0) {
+            resultFlag = true;
+        }
+        data = getDataAfterOperate();
+        if (data != null) {
+            resultFlag = true;
+        }
+        if (resultFlag) {
+            listener.onSuccess(data);
+        } else {
+            listener.onError(BookErrorType.UPDATE_ERROR);
+        }
     }
 
     @Override

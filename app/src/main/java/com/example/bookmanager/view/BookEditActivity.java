@@ -69,7 +69,7 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
         }
         Intent intent = getIntent();
         data = (List<Book>) intent.getSerializableExtra("BookData");
-        Toast.makeText(this, "左滑删除，拖动排序哦~", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "滑动删除，拖动排序哦~", Toast.LENGTH_SHORT).show();
         // 修改状态栏为亮色主题
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);

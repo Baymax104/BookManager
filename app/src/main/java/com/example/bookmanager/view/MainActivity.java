@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         // 查询数据库获取数据
         operator.query(this);
 
+        testData();
+
         // RecyclerView绑定
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         bookList.setLayoutManager(linearLayout);
@@ -96,6 +98,19 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
+    }
+
+    void testData() {
+        operator.insert(new Book("一","无","2022-4-14",20,100), this);
+        operator.insert(new Book("二","无","2022-4-14",20,100), this);
+        operator.insert(new Book("三","无","2022-4-14",20,100), this);
+        operator.insert(new Book("四","无","2022-4-14",20,100), this);
+        operator.insert(new Book("五","无","2022-4-14",20,100), this);
+        operator.insert(new Book("六","无","2022-4-14",20,100), this);
+        operator.insert(new Book("七","无","2022-4-14",20,100), this);
+        operator.insert(new Book("八","无","2022-4-14",20,100), this);
+        operator.insert(new Book("九","无","2022-4-14",20,100), this);
+
     }
 
     @Override

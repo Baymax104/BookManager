@@ -46,6 +46,8 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
         setContentView(R.layout.activity_book_edit);
         initView();
 
+
+
         // 绑定RecyclerView和关联拖动接口
         adapter = new BookAdapter(this, data, true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -60,7 +62,6 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
         bookList = findViewById(R.id.book_list);
         Toolbar toolbar = findViewById(R.id.tool_bar);
 
-
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -68,6 +69,7 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
             actionBar.setHomeAsUpIndicator(R.drawable.back);
             actionBar.setDisplayShowTitleEnabled(false);
         }
+
         Intent intent = getIntent();
         Book[] passData = (Book[]) intent.getSerializableExtra("BookData");
         data = Arrays.asList(passData);

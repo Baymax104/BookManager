@@ -16,11 +16,11 @@ import androidx.annotation.Nullable;
 public class BookSQLHelper extends SQLiteOpenHelper {
     private String createBook = "create table Book(" +
             "id integer primary key autoincrement," +
-            "name text," +
-            "author text," +
-            "addTime text," +
-            "progress integer," +
-            "page integer)";
+            "name text not null," +
+            "author text not null," +
+            "addTime text not null," +
+            "progress integer not null," +
+            "page integer default 0)";
     public BookSQLHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }

@@ -43,6 +43,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView bookName;
+        TextView author;
         TextView addTime;
         ProgressBar readProgress;
         MaterialCardView cardView;
@@ -56,6 +57,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             cardView = itemView.findViewById(R.id.card_view);
             sortImg = itemView.findViewById(R.id.sort_img);
             progressNumber = itemView.findViewById(R.id.num_progress);
+            author = itemView.findViewById(R.id.book_author);
         }
     }
 
@@ -70,7 +72,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = data.get(position);
         holder.bookName.setText(book.getName());
-        holder.addTime.setText("添加时间：" + book.getTime());
+        holder.author.setText(book.getAuthor());
+        holder.addTime.setText(book.getTime());
         int progress = book.getPage() / book.getProgress();
         holder.readProgress.setProgress(progress);
         holder.progressNumber.setText(book.getProgress()+"/"+ book.getPage());

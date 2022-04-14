@@ -12,16 +12,26 @@ import java.io.Serializable;
 public class Book implements Serializable {
     private String name;
     private String time;
+    private String author;
     private int progress;
     private int page;
 
     public Book() {}
 
-    public Book(String name, String time, int progress, int page) {
+    public Book(String name, String time, String author, int progress, int page) {
         this.name = name;
         this.time = time;
+        this.author = author;
         this.progress = progress;
         this.page = page;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getName() {

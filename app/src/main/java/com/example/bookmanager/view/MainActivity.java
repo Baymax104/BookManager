@@ -96,19 +96,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void testData() {
-        data.add(new Book("第一本书", "2022-4-13", 20, 100));
-        data.add(new Book("第二本书", "2022-4-13", 20, 100));
-        data.add(new Book("第三本书", "2022-4-13", 20, 100));
-        data.add(new Book("第四本书", "2022-4-13", 20, 100));
-        data.add(new Book("第五本书", "2022-4-13", 20, 100));
-        data.add(new Book("第六本书", "2022-4-13", 20, 100));
-        data.add(new Book("第七本书", "2022-4-13", 20, 100));
-        data.add(new Book("第八本书", "2022-4-13", 20, 100));
-        data.add(new Book("第九本书", "2022-4-13", 20, 100));
-        data.add(new Book("第十本书", "2022-4-13", 20, 100));
-        data.add(new Book("第十一本书", "2022-4-13", 20, 100));
-        data.add(new Book("第十二本书", "2022-4-13", 20, 100));
-        data.add(new Book("第十三本书", "2022-4-13", 20, 100));
+        data.add(new Book("第一本书", "2022-4-13", "佚名", 20, 100));
+        data.add(new Book("第二本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第三本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第四本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第五本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第六本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第七本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第八本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第九本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第十本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第十一本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第十二本书", "2022-4-13", "佚名",20, 100));
+        data.add(new Book("第十三本书", "2022-4-13", "佚名",20, 100));
     }
 
     @Override

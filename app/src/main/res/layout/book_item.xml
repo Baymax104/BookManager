@@ -30,18 +30,33 @@
                         android:textSize="20sp"
                         android:textColor="@color/black"
                         android:layout_gravity="start"/>
-                <TextView
-                        android:layout_width="wrap_content"
+                <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/add_time"
-                        android:layout_gravity="start"
-                        android:textColor="@color/book2"/>
+                        android:orientation="horizontal">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/book_author"
+                            android:textColor="@color/book2"
+                            android:layout_alignParentStart="true"
+                            android:maxEms="10"/>
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/add_time"
+                            android:layout_alignParentEnd="true"
+                            android:textColor="@color/book2"/>
+                </RelativeLayout>
             </LinearLayout>
             <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/sort_img"
-                    android:layout_gravity="end"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
                     android:visibility="invisible"
                     android:src="@drawable/sort"
                     android:contentDescription="@string/sort" />

@@ -80,24 +80,12 @@ public class BookOperator implements IBookOperator {
 
     @Override
     public void query(BookOperatorListener listener) {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        List<Book> data = new ArrayList<>();
-        String querySQL = "select * from Book";
-        Cursor cursor = db.rawQuery(querySQL, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String name = cursor.getString(1);
-                String author = cursor.getString(2);
-                String addTime = cursor.getString(3);
-                int progress = cursor.getInt(4);
-                int page = cursor.getInt(5);
-                data.add(new Book(name, author, addTime, progress, page));
-            }
-            cursor.close();
+        List<Book> data = getDataAfterOperate();
+        if (data != null) {
             listener.onSuccess(data);
-            return;
+        } else {
+            listener.onError(BookErrorType.QUERY_ERROR);
         }
-        listener.onError(BookErrorType.QUERY_ERROR);
     }
 
     @Override

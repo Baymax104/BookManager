@@ -12,7 +12,7 @@ import com.example.bookmanager.domain.Book;
 public interface IBookOperator {
     void insert(Book book, BookOperatorListener listener);
     void query(BookOperatorListener listener);
-    void update();
+    void update(Book book, BookOperatorListener listener);
     void delete(Book book, BookOperatorListener listener);
     void swap();
 }

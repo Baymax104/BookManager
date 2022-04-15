@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,10 +33,16 @@ import com.example.bookmanager.model.BookOperatorListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.Serializable;
+
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class MainActivity extends AppCompatActivity implements BookOperatorListener {
     Toolbar toolbar;
@@ -62,19 +69,21 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SQLiteStudioService.instance().start(this);
         initView();
+
+        // RecyclerView绑定
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        bookList.setLayoutManager(layoutManager);
+        bookList.setAdapter(adapter);
+
         // 查询数据库获取数据
         operator.query(this);
 
-        testData();
-
-        // RecyclerView绑定
-        LinearLayoutManager linearLayout = new LinearLayoutManager(this);
-        bookList.setLayoutManager(linearLayout);
-        bookList.setAdapter(adapter);
-
         // FloatingActionButton监听
         floatingAdd.setOnClickListener(view -> showAddDialog());
+
+        adapter.setItemClickListener(position -> showUpdateDialog(position));
     }
 
     private void initView() {
@@ -98,19 +107,6 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-    }
-
-    void testData() {
-        operator.insert(new Book("一","无","2022-4-14",20,100), this);
-        operator.insert(new Book("二","无","2022-4-14",20,100), this);
-        operator.insert(new Book("三","无","2022-4-14",20,100), this);
-        operator.insert(new Book("四","无","2022-4-14",20,100), this);
-        operator.insert(new Book("五","无","2022-4-14",20,100), this);
-        operator.insert(new Book("六","无","2022-4-14",20,100), this);
-        operator.insert(new Book("七","无","2022-4-14",20,100), this);
-        operator.insert(new Book("八","无","2022-4-14",20,100), this);
-        operator.insert(new Book("九","无","2022-4-14",20,100), this);
-
     }
 
     @Override
@@ -140,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     private void showAddDialog() {
         View view = LayoutInflater.from(this).inflate(R.layout.add_book_dialog, null, false);
         AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
+
         // 设置对话框背景为透明
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         // 设置对话框透明度
@@ -150,13 +147,72 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         TextView manualAdd = view.findViewById(R.id.manual_add);
         TextView scanAdd = view.findViewById(R.id.scan_add);
         manualAdd.setOnClickListener(v -> {
-            Toast.makeText(this, "手动录入", Toast.LENGTH_SHORT).show();
+            showManualAddDialog();
             dialog.dismiss();
         });
         scanAdd.setOnClickListener(v -> {
             Toast.makeText(this, "扫码录入", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
+        dialog.show();
+    }
+
+    private void showManualAddDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.manual_insert_dialog, null, false);
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
+
+        // 设置点击空白部分对话框不消失
+        dialog.setCanceledOnTouchOutside(false);
+        // 设置对话框背景
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextView confirm = view.findViewById(R.id.insert_confirm);
+        TextView cancel = view.findViewById(R.id.insert_cancel);
+        cancel.setOnClickListener(view1 -> dialog.dismiss());
+        confirm.setOnClickListener(view1 -> {
+            EditText inputName = view.findViewById(R.id.input_book_name);
+            EditText inputAuthor = view.findViewById(R.id.input_book_author);
+            EditText inputPage = view.findViewById(R.id.input_book_page);
+            if (inputName != null && !inputName.getText().toString().equals("") &&
+                inputAuthor != null && !inputAuthor.getText().toString().equals("") &&
+                inputPage != null && !inputPage.getText().toString().equals("")) {
+                String name = inputName.getText().toString();
+                String author = inputAuthor.getText().toString();
+                int page = Integer.parseInt(inputPage.getText().toString());
+                Date nowTime = new Date(System.currentTimeMillis());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                String addTime = dateFormat.format(nowTime);
+                Book book = new Book(name, author, addTime, 0, page);
+                operator.insert(book, this);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "请输入完整信息", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
+
+    private void showUpdateDialog(int position) {
+        View view = LayoutInflater.from(this).inflate(R.layout.update_progress_dialog, null, false);
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextView confirm = view.findViewById(R.id.update_confirm);
+        TextView cancel = view.findViewById(R.id.update_cancel);
+        confirm.setOnClickListener(view1 -> {
+            EditText inputProgress = view.findViewById(R.id.input_book_progress);
+            if (inputProgress != null && !inputProgress.getText().toString().equals("")) {
+                int progress = Integer.parseInt(inputProgress.getText().toString());
+                Book book = data.get(position);
+                book.setProgress(progress);
+                operator.update(book, this);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "输入不能为空", Toast.LENGTH_SHORT).show();
+            }
+        });
+        cancel.setOnClickListener(view1 -> dialog.dismiss());
         dialog.show();
     }
 

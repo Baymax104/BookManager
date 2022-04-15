@@ -89,8 +89,32 @@ public class BookOperator implements IBookOperator {
     }
 
     @Override
-    public void update() {
-
+    public void update(Book book, BookOperatorListener listener) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        List<Book> data = null;
+        boolean resultFlag = false;
+        String queryExistsSQL = "select * from Book where name=? and author=?";
+        Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(),book.getAuthor()});
+        if (cursor != null && cursor.getCount() != 0) {
+            ContentValues values = new ContentValues();
+            values.put("progress", book.getProgress());
+            int row = db.update("Book", values, "name=? and author=?", new String[]{
+                    book.getName(), book.getAuthor()
+            });
+            if (row != 0) {
+                resultFlag = true;
+            }
+            cursor.close();
+            data = getDataAfterOperate();
+            if (data != null) {
+                resultFlag = true;
+            }
+        }
+        if (resultFlag) {
+            listener.onSuccess(data);
+        } else {
+            listener.onError(BookErrorType.UPDATE_ERROR);
+        }
     }
 
     @Override
@@ -112,7 +136,7 @@ public class BookOperator implements IBookOperator {
         if (resultFlag) {
             listener.onSuccess(data);
         } else {
-            listener.onError(BookErrorType.UPDATE_ERROR);
+            listener.onError(BookErrorType.DELETE_ERROR);
         }
     }
 

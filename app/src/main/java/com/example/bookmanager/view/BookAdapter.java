@@ -1,5 +1,6 @@
 package com.example.bookmanager.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private List<Book> data;
     private Context context;
     private boolean isEdit;
+    private OnItemClickListener itemClickListener;
 
     public BookAdapter() {}
     public BookAdapter(Context context, List<Book> data, boolean isEdit) {
@@ -39,6 +41,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     public void setData(List<Book> data) {
         this.data = data;
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -74,16 +80,19 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         holder.bookName.setText(book.getName());
         holder.author.setText(book.getAuthor());
         holder.addTime.setText(book.getAddTime());
-        int progress = book.getPage() / book.getProgress();
+        double proportion = book.getProgress() * 1.0 / book.getPage();
+        int progress = (int) (proportion * 100);
         holder.readProgress.setProgress(progress);
         holder.progressNumber.setText(book.getProgress()+"/"+ book.getPage());
         if (isEdit) {
             holder.sortImg.setVisibility(View.VISIBLE);
         }
+        holder.itemView.setOnClickListener(view -> itemClickListener.onItemClick(position));
     }
 
     @Override
     public int getItemCount() {
         return data.size();
     }
+
 }

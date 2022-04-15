@@ -11,6 +11,8 @@ import com.example.bookmanager.domain.BookSQLHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 /**
  * @Description
  * @Author Jake
@@ -32,13 +34,16 @@ public class BookOperator implements IBookOperator {
     @Override
     public void insert(Book book, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        List<Book> data = null;
-        boolean resultFlag = false;
+        List<Book> data;
         // 插入前查询是否存在相同记录
         String queryExistsSQL = "select * from Book where name=? and author=?";
-        Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(),book.getAuthor()});
-        // 若存在相同记录则更新，否则插入
-        if (cursor != null) {
+        db.beginTransaction();
+        try (Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(),book.getAuthor()})) {
+
+            // 若存在相同记录则更新，否则插入
+            if (cursor == null) {
+                throw new BookException("数据不存在", BookException.ErrorType.INSERT_ERROR);
+            }
             if (cursor.moveToFirst()) {
                 ContentValues values = new ContentValues();
                 values.put("name",book.getName());
@@ -50,8 +55,8 @@ public class BookOperator implements IBookOperator {
                         book.getName(),
                         book.getAuthor()
                 });
-                if (row != 0) {
-                    resultFlag = true;
+                if (row == 0) {
+                    throw new BookException("更新失败", BookException.ErrorType.INSERT_ERROR);
                 }
             } else {
                 ContentValues values = new ContentValues();
@@ -61,88 +66,147 @@ public class BookOperator implements IBookOperator {
                 values.put("progress",book.getProgress());
                 values.put("page",book.getPage());
                 long insertId = db.insert("Book",null,values);
-                if (insertId != -1) {
-                    resultFlag = true;
+                if (insertId == -1) {
+                    throw new BookException("添加失败", BookException.ErrorType.INSERT_ERROR);
                 }
             }
-            cursor.close();
             data = getDataAfterOperate();
-            if (data != null) {
-                resultFlag = true;
+            if (data == null) {
+                throw new BookException("返回数据失败", BookException.ErrorType.INSERT_ERROR);
             }
-        }
-        if (resultFlag) {
             listener.onSuccess(data);
-        } else {
-            listener.onError(BookErrorType.INSERT_ERROR);
+            db.setTransactionSuccessful();
+        } catch (BookException e) {
+            listener.onError(e);
+        } finally {
+            db.endTransaction();
         }
+
     }
 
     @Override
     public void query(BookOperatorListener listener) {
-        List<Book> data = getDataAfterOperate();
-        if (data != null) {
+        try {
+            List<Book> data = getDataAfterOperate();
+            if (data == null) {
+                throw new BookException("查询失败", BookException.ErrorType.QUERY_ERROR);
+            }
             listener.onSuccess(data);
-        } else {
-            listener.onError(BookErrorType.QUERY_ERROR);
+        } catch (BookException e) {
+            listener.onError(e);
         }
     }
 
     @Override
     public void update(Book book, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        List<Book> data = null;
-        boolean resultFlag = false;
+        List<Book> data;
         String queryExistsSQL = "select * from Book where name=? and author=?";
-        Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(),book.getAuthor()});
-        if (cursor != null && cursor.getCount() != 0) {
+        db.beginTransaction();
+        try (Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(), book.getAuthor()})) {
+
+            if (cursor == null || cursor.getCount() == 0) {
+                throw new BookException("数据不存在", BookException.ErrorType.UPDATE_ERROR);
+            }
             ContentValues values = new ContentValues();
             values.put("progress", book.getProgress());
             int row = db.update("Book", values, "name=? and author=?", new String[]{
                     book.getName(), book.getAuthor()
             });
-            if (row != 0) {
-                resultFlag = true;
+            if (row == 0) {
+                throw new BookException("更新失败", BookException.ErrorType.UPDATE_ERROR);
             }
-            cursor.close();
             data = getDataAfterOperate();
-            if (data != null) {
-                resultFlag = true;
+            if (data == null) {
+                throw new BookException("返回数据失败", BookException.ErrorType.UPDATE_ERROR);
             }
-        }
-        if (resultFlag) {
             listener.onSuccess(data);
-        } else {
-            listener.onError(BookErrorType.UPDATE_ERROR);
+            db.setTransactionSuccessful();
+        } catch (BookException e) {
+            listener.onError(e);
+        } finally {
+            db.endTransaction();
         }
     }
 
     @Override
-    public void delete(Book book, BookOperatorListener listener) {
+    public void delete(Book book, int position, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         List<Book> data;
-        boolean resultFlag = false;
-        int row = db.delete("Book", "name=? and author=?", new String[]{
-                book.getName(),
-                book.getAuthor()
-        });
-        if (row != 0) {
-            resultFlag = true;
-        }
-        data = getDataAfterOperate();
-        if (data != null) {
-            resultFlag = true;
-        }
-        if (resultFlag) {
-            listener.onSuccess(data);
-        } else {
-            listener.onError(BookErrorType.DELETE_ERROR);
+        db.beginTransaction();
+        try {
+            int row = db.delete("Book", "name=? and author=?", new String[]{
+                    book.getName(),
+                    book.getAuthor()
+            });
+            if (row == 0) {
+                throw new BookException("删除失败", BookException.ErrorType.DELETE_ERROR);
+            }
+            data = getDataAfterOperate();
+            if (data == null) {
+                throw new BookException("返回数据失败", BookException.ErrorType.DELETE_ERROR);
+            }
+            listener.onSuccess(data, position);
+            db.setTransactionSuccessful();
+        } catch (BookException e) {
+            listener.onError(e);
+        } finally {
+            db.endTransaction();
         }
     }
 
     @Override
-    public void swap() {
-
+    public void swap(Book fromBook, Book toBook, int fromPosition, int toPosition, BookOperatorListener listener) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        List<Book> data;
+        String fromId, toId;
+        // 分别更新两个Book实现交换
+        String queryExistsSQL = "select id from Book where name=? and author=?";
+        db.beginTransaction();
+        try (Cursor fromCursor = db.rawQuery(queryExistsSQL, new String[]{fromBook.getName(), fromBook.getAuthor()});
+            Cursor toCursor = db.rawQuery(queryExistsSQL, new String[]{toBook.getName(),toBook.getAuthor()})) {
+            // 查询fromBook的id
+            if (fromCursor == null || toCursor == null || !fromCursor.moveToFirst() || !toCursor.moveToFirst()) {
+                throw new BookException("查询失败", BookException.ErrorType.SORT_ERROR);
+            }
+            fromId = fromCursor.getString(0);
+            toId = toCursor.getString(0);
+            if (fromId == null || toId == null) {
+                throw new BookException("获取id失败", BookException.ErrorType.SORT_ERROR);
+            }
+            // 更新toId的数据
+            ContentValues values = new ContentValues();
+            values.put("name",fromBook.getName());
+            values.put("author",fromBook.getAuthor());
+            values.put("addTime",fromBook.getAddTime());
+            values.put("progress",fromBook.getProgress());
+            values.put("page",fromBook.getPage());
+            int row = db.update("Book",values,"id=?",new String[]{toId});
+            if (row == 0) {
+                throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
+            }
+            // 更新fromId的数据
+            values = new ContentValues();
+            values.put("name",toBook.getName());
+            values.put("author",toBook.getAuthor());
+            values.put("addTime",toBook.getAddTime());
+            values.put("progress",toBook.getProgress());
+            values.put("page",toBook.getPage());
+            row = db.update("Book",values, "id=?",new String[]{fromId});
+            if (row == 0) {
+                throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
+            }
+            data = getDataAfterOperate();
+            if (data == null) {
+                throw new BookException("返回数据失败", BookException.ErrorType.SORT_ERROR);
+            }
+            listener.onSuccess(data, fromPosition, toPosition);
+            db.setTransactionSuccessful();
+        } catch (BookException e) {
+            listener.onError(e);
+        } finally {
+            db.endTransaction();
+        }
     }
 
     private List<Book> getDataAfterOperate() {

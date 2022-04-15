@@ -87,7 +87,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         if (isEdit) {
             holder.sortImg.setVisibility(View.VISIBLE);
         }
-        holder.itemView.setOnClickListener(view -> itemClickListener.onItemClick(position));
+        if (!isEdit) {
+            holder.itemView.setOnClickListener(view -> itemClickListener.onItemClick(position));
+        }
     }
 
     @Override

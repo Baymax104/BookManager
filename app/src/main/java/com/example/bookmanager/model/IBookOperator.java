@@ -13,6 +13,6 @@ public interface IBookOperator {
     void insert(Book book, BookOperatorListener listener);
     void query(BookOperatorListener listener);
     void update(Book book, BookOperatorListener listener);
-    void delete(Book book, BookOperatorListener listener);
-    void swap();
+    void delete(Book book, int position, BookOperatorListener listener);
+    void swap(Book fromBook, Book toBook, int fromPosition, int toPosition, BookOperatorListener listener);
 }

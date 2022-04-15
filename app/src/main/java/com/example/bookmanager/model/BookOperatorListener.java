@@ -12,6 +12,6 @@ import java.util.List;
  * @Version
  */
 public interface BookOperatorListener {
-    void onSuccess(List<Book> data);
-    void onError(BookErrorType resultType);
+    void onSuccess(List<Book> data, int... position);
+    void onError(BookException e);
 }

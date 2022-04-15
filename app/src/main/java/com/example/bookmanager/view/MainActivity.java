@@ -3,17 +3,22 @@ package com.example.bookmanager.view;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +38,8 @@ import com.example.bookmanager.model.BookOperator;
 import com.example.bookmanager.model.BookOperatorListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 
 import java.text.SimpleDateFormat;
@@ -134,6 +140,17 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                Toast.makeText(this, "值：" + result.getContents(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private void showAddDialog() {
         View view = LayoutInflater.from(this).inflate(R.layout.add_book_dialog, null, false);
         AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
@@ -153,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         });
         scanAdd.setOnClickListener(v -> {
             Toast.makeText(this, "扫码录入", Toast.LENGTH_SHORT).show();
+            scanBarcode();
             dialog.dismiss();
         });
         dialog.show();
@@ -206,15 +224,51 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
             if (inputProgress != null && !inputProgress.getText().toString().equals("")) {
                 int progress = Integer.parseInt(inputProgress.getText().toString());
                 Book book = data.get(position);
-                book.setProgress(progress);
-                operator.update(book, this);
-                dialog.dismiss();
+                if (progress <= book.getPage()) {
+                    book.setProgress(progress);
+                    operator.update(book, this);
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(this, "超过了最大页数", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(this, "输入不能为空", Toast.LENGTH_SHORT).show();
             }
         });
         cancel.setOnClickListener(view1 -> dialog.dismiss());
         dialog.show();
+    }
+
+    private void scanBarcode() {
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+        } else {
+            startScan();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startScan();
+            } else {
+                Toast.makeText(this, "You denied the permission", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private void startScan() {
+        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+        intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+        intentIntegrator.setPrompt("扫描条形码");
+        intentIntegrator.setCameraId(0);
+        intentIntegrator.setBeepEnabled(true);
+        intentIntegrator.setOrientationLocked(true);
+        intentIntegrator.setCaptureActivity(BookCapture.class);
+        intentIntegrator.initiateScan();
     }
 
     @Override

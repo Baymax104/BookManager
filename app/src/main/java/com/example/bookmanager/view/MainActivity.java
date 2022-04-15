@@ -225,6 +225,18 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
 
     @Override
     public void onError(BookErrorType resultType) {
-
+        switch (resultType) {
+            case INSERT_ERROR:
+                Toast.makeText(this, "添加错误！", Toast.LENGTH_SHORT).show();
+                break;
+            case UPDATE_ERROR:
+                Toast.makeText(this, "更新错误！", Toast.LENGTH_SHORT).show();
+                break;
+            case QUERY_ERROR:
+                Toast.makeText(this, "查询错误！", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
     }
 }

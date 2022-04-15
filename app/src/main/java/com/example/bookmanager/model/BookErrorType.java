@@ -11,5 +11,6 @@ public enum BookErrorType {
     INSERT_ERROR,
     UPDATE_ERROR,
     QUERY_ERROR,
-    DELETE_ERROR
+    DELETE_ERROR,
+    SORT_ERROR
 }

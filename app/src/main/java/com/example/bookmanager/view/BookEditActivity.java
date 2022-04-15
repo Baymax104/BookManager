@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.bookmanager.R;
@@ -122,6 +123,15 @@ public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipe
 
     @Override
     public void onError(BookErrorType resultType) {
-
+        switch (resultType) {
+            case DELETE_ERROR:
+                Toast.makeText(this, "删除错误！", Toast.LENGTH_SHORT).show();
+                break;
+            case SORT_ERROR:
+                Toast.makeText(this, "排序失败！", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.example.bookmanager.view;
 
 /**
- * @Description
+ * @Description RecyclerView子项外部监听接口
  * @Author Jake
  * @email wzy1048168235@163.com
  * @Date 2022/4/15 13:58

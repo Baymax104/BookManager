@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BookEditActivity extends AppCompatActivity implements IMoveAndSwipeCallback, BookOperatorListener {
+public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCallback, BookOperatorListener {
 
     private RecyclerView bookList;
     private List<Book> data = new ArrayList<>();

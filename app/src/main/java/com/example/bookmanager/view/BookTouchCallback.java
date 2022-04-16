@@ -1,7 +1,6 @@
 package com.example.bookmanager.view;
 
 import android.graphics.Color;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +18,9 @@ import com.google.android.material.card.MaterialCardView;
  * @Version
  */
 public class BookTouchCallback extends ItemTouchHelper.Callback {
-    private IMoveAndSwipeCallback callback;
+    private IMoveSwipeCallback callback;
 
-    public BookTouchCallback(IMoveAndSwipeCallback callback) {
+    public BookTouchCallback(IMoveSwipeCallback callback) {
         this.callback = callback;
     }
 

@@ -7,7 +7,7 @@ package com.example.bookmanager.view;
  * @Date 2022/4/13 18:42
  * @Version
  */
-public interface IMoveAndSwipeCallback {
+public interface IMoveSwipeCallback {
     void onMove(int fromPosition, int toPosition);
     void onSwiped(int position);
 }

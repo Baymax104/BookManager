@@ -39,7 +39,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/book_author"
-                            android:textColor="@color/book2"
+                            android:textColor="@color/book_card"
                             android:layout_alignParentStart="true"
                             android:maxEms="10"/>
                     <TextView
@@ -47,7 +47,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/add_time"
                             android:layout_alignParentEnd="true"
-                            android:textColor="@color/book2"/>
+                            android:textColor="@color/book_card"/>
                 </RelativeLayout>
             </LinearLayout>
             <ImageView
@@ -81,7 +81,7 @@
                     android:layout_marginStart="7dp"
                     android:gravity="center_horizontal"
                     android:textSize="13sp"
-                    android:textColor="@color/book2"
+                    android:textColor="@color/book_card"
                     android:id="@+id/num_progress"/>
 
 

@@ -3,23 +3,17 @@ package com.example.bookmanager.view;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,8 +32,7 @@ import com.example.bookmanager.model.BookOperator;
 import com.example.bookmanager.model.BookOperatorListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.king.zxing.CameraScan;
 
 
 import java.text.SimpleDateFormat;
@@ -61,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     BookAdapter adapter = new BookAdapter(this, data, false);
     BookOperator operator = new BookOperator(this);
 
-    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+    private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
@@ -69,6 +62,15 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
                     data = Arrays.asList(passData);
                     adapter.setData(data);
                     adapter.notifyDataSetChanged();
+                }
+            });
+
+    private ActivityResultLauncher<Intent> scanLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    String scanResult = CameraScan.parseScanResult(result.getData());
+                    Toast.makeText(this, scanResult, Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -111,9 +113,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         }
         // 左滑菜单图标显示颜色
         leftMenu.setItemIconTintList(null);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
     }
 
     @Override
@@ -135,21 +135,11 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
             Intent intent = new Intent(this, BookEditActivity.class);
             Book[] passData = data.toArray(new Book[0]);
             intent.putExtra("BookData", passData);
-            launcher.launch(intent);
+            editLauncher.launch(intent);
         }
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() != null) {
-                Toast.makeText(this, "值：" + result.getContents(), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     private void showAddDialog() {
         View view = LayoutInflater.from(this).inflate(R.layout.add_book_dialog, null, false);
@@ -169,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
             dialog.dismiss();
         });
         scanAdd.setOnClickListener(v -> {
-            Toast.makeText(this, "扫码录入", Toast.LENGTH_SHORT).show();
             scanBarcode();
             dialog.dismiss();
         });
@@ -192,9 +181,11 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
             EditText inputName = view.findViewById(R.id.input_book_name);
             EditText inputAuthor = view.findViewById(R.id.input_book_author);
             EditText inputPage = view.findViewById(R.id.input_book_page);
+
             if (inputName != null && !inputName.getText().toString().equals("") &&
                 inputAuthor != null && !inputAuthor.getText().toString().equals("") &&
                 inputPage != null && !inputPage.getText().toString().equals("")) {
+
                 String name = inputName.getText().toString();
                 String author = inputAuthor.getText().toString();
                 int page = Integer.parseInt(inputPage.getText().toString());
@@ -240,36 +231,10 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     }
 
     private void scanBarcode() {
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
-        } else {
-            startScan();
-        }
+        Intent intent = new Intent(this, BookCapture.class);
+        scanLauncher.launch(intent);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startScan();
-            } else {
-                Toast.makeText(this, "You denied the permission", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
-
-    private void startScan() {
-        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-        intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
-        intentIntegrator.setPrompt("扫描条形码");
-        intentIntegrator.setCameraId(0);
-        intentIntegrator.setBeepEnabled(true);
-        intentIntegrator.setOrientationLocked(true);
-        intentIntegrator.setCaptureActivity(BookCapture.class);
-        intentIntegrator.initiateScan();
-    }
 
     @Override
     public void onSuccess(List<Book> data, int... position) {

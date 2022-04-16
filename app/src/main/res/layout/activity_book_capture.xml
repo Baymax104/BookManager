@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    <com.king.zxing.ViewfinderView
+            android:id="@+id/viewfinderView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:labelText="请将图书背面的条形码放入扫描框中"
+            app:laserColor="#166bbd"
+            app:cornerColor="@color/main_color"
+            app:laserStyle="grid" />
+    <ImageView
+            android:id="@+id/ivFlashlight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/zxl_flashlight_selector"
+            android:layout_marginTop="170dp" />
+    <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tool_bar"
+            android:background="#00000000"
+            android:fitsSystemWindows="true"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

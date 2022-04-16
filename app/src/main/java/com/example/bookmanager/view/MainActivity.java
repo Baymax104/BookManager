@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     private BookAdapter adapter = new BookAdapter(this, data, false);
     private BookOperator operator = new BookOperator(this);
     private BookDialogs dialogs = new BookDialogs(this);
+    private RequestBook requestBook = null;
 
     private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -192,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     @Override
     public void getRequestBook(RequestBook requestBook) {
         Looper.prepare();
-        Toast.makeText(this, requestBook.getName(), Toast.LENGTH_SHORT).show();
+        this.requestBook = requestBook;
         Looper.loop();
     }
 

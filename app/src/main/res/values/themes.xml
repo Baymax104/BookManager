@@ -14,4 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:textColorSecondary">@color/main_color</item>
     </style>
+    <style name="OverflowMenuTheme" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+    </style>
 </resources>

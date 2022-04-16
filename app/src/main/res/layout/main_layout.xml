@@ -13,8 +13,7 @@
                 android:layout_height="?actionBarSize"
                 android:id="@+id/tool_bar"
                 android:background="@color/bar_color"
-
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:popupTheme="@style/OverflowMenuTheme"
                 app:layout_scrollFlags="scroll|snap|enterAlways">
             <TextView
                     android:layout_width="wrap_content"

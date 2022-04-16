@@ -32,7 +32,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private boolean isEdit;
     private OnItemClickListener itemClickListener;
 
-    public BookAdapter() {}
+    public BookAdapter() {
+    }
     public BookAdapter(Context context, List<Book> data, boolean isEdit) {
         this.context = context;
         this.data = data;

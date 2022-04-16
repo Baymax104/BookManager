@@ -16,7 +16,8 @@ public class Book implements Serializable {
     private int progress;
     private int page;
 
-    public Book() {}
+    public Book() {
+    }
 
     public Book(String name, String author, String addTime, int progress, int page) {
         this.name = name;

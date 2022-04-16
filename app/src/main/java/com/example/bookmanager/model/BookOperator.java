@@ -24,7 +24,8 @@ public class BookOperator implements IBookOperator {
     private Context context;
     private BookSQLHelper helper;
 
-    public BookOperator() {}
+    public BookOperator() {
+    }
 
     public BookOperator(Context context) {
         this.context = context;

@@ -3,11 +3,13 @@
         package="com.example.bookmanager">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
             android:allowBackup="true"
@@ -15,8 +17,10 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/Theme.BookManager"
-            android:usesCleartextTraffic="true">
+            android:theme="@style/Theme.BookManager">
+        <activity
+                android:name=".view.BookInfoActivity"
+                android:exported="false" />
         <activity
                 android:name=".view.BookEditActivity"
                 android:exported="false" />
@@ -32,7 +36,7 @@
         <activity
                 android:name=".view.BookCapture"
                 android:screenOrientation="portrait"
-                android:theme="@style/CaptureTheme"/>
+                android:theme="@style/CaptureTheme" />
     </application>
 
 </manifest>

@@ -28,7 +28,8 @@ import java.util.Locale;
 public class BookDialogs {
     private Context context;
 
-    public BookDialogs() {}
+    public BookDialogs() {
+    }
 
     public BookDialogs(Context context) {
         this.context = context;

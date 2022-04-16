@@ -12,39 +12,37 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmanager.R;
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.domain.RequestBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookOperator;
 import com.example.bookmanager.model.BookOperatorListener;
+import com.example.bookmanager.model.RequestHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.king.zxing.CameraScan;
 
 
-import java.text.SimpleDateFormat;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
-public class MainActivity extends AppCompatActivity implements BookOperatorListener,DialogCallback {
+public class MainActivity extends AppCompatActivity implements BookOperatorListener,DialogCallback,IRequestCallback {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView leftMenu;
@@ -54,8 +52,6 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     private BookAdapter adapter = new BookAdapter(this, data, false);
     private BookOperator operator = new BookOperator(this);
     private BookDialogs dialogs = new BookDialogs(this);
-
-
 
     private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -72,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    String scanResult = CameraScan.parseScanResult(result.getData());
-                    Toast.makeText(this, scanResult, Toast.LENGTH_SHORT).show();
+                    String isbnCode = CameraScan.parseScanResult(result.getData());
+                    RequestHelper.sendRequest(isbnCode, this);
                 }
             });
 
@@ -95,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         // FloatingActionButton监听
         floatingAdd.setOnClickListener(view -> dialogs.showAddDialog(R.layout.add_book_dialog, this));
 
+        // RecyclerView子项点击监听
         adapter.setItemClickListener(position -> dialogs.showUpdateDialog(
                 R.layout.update_progress_dialog,
                 position,
@@ -176,19 +173,43 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     public void onError(BookException e) {
         switch (e.errorType) {
             case INSERT_ERROR:
-                Toast.makeText(this, "添加："+ e, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "添加:"+ e, Toast.LENGTH_SHORT).show();
                 Log.e("MainActivity",e.toString());
                 break;
             case UPDATE_ERROR:
-                Toast.makeText(this, "更新："+e, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "更新:"+e, Toast.LENGTH_SHORT).show();
                 Log.e("MainActivity",e.toString());
                 break;
             case QUERY_ERROR:
-                Toast.makeText(this, "查询："+e, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "查询:"+e, Toast.LENGTH_SHORT).show();
                 Log.e("MainActivity", e.toString());
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void getRequestBook(RequestBook requestBook) {
+        Looper.prepare();
+        Toast.makeText(this, requestBook.getName(), Toast.LENGTH_SHORT).show();
+        Looper.loop();
+    }
+
+    @Override
+    public void getRequestError(Exception e) {
+        Looper.prepare();
+        if (e instanceof IOException) {
+            Toast.makeText(this, "连接失败:" + e, Toast.LENGTH_SHORT).show();
+            Log.e("MainActivity", e.toString());
+        } else if (e instanceof JSONException) {
+            Toast.makeText(this, "解析失败:" + e, Toast.LENGTH_SHORT).show();
+            Log.e("MainActivity", e.toString());
+        } else {
+            Toast.makeText(this, "未知错误:" + e, Toast.LENGTH_SHORT).show();
+            Log.e("MainActivity", e.toString());
+            e.printStackTrace();
+        }
+        Looper.loop();
     }
 }

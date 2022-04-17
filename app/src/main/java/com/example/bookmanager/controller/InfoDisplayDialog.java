@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
 import com.example.bookmanager.domain.RequestBook;
 import com.example.bookmanager.controller.callbacks.DialogCallback;
+import com.example.bookmanager.model.DialogsHelper;
 import com.lxj.xpopup.core.BottomPopupView;
 
 /**
@@ -21,12 +23,18 @@ import com.lxj.xpopup.core.BottomPopupView;
  * @Date 2022/4/17 16:21
  * @Version
  */
-public class InfoDialog extends BottomPopupView {
+public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCallback {
 
     private Context context;
     private DialogCallback callback;
     private RequestBook requestBook;
-    public InfoDialog(@NonNull Context context, RequestBook requestBook, DialogCallback callback) {
+
+    public InfoDisplayDialog(@NonNull Context context) {
+        super(context);
+        this.context = context;
+    }
+
+    public InfoDisplayDialog(@NonNull Context context, RequestBook requestBook, DialogCallback callback) {
         super(context);
         this.context = context;
         this.callback = callback;
@@ -54,13 +62,13 @@ public class InfoDialog extends BottomPopupView {
         infoPublishing.setText(String.format(resources.getString(R.string.info_publishing),requestBook.getPublishing()));
         infoIsbn.setText(String.format(resources.getString(R.string.info_isbn), requestBook.getIsbn()));
         infoDescription.setText(String.format(resources.getString(R.string.info_description),requestBook.getDescription()));
-        changeInfo(infoName,infoAuthor,infoPage,requestBook);
+        infoName.setText(String.format(resources.getString(R.string.info_name),requestBook.getName()));
+        infoAuthor.setText(String.format(resources.getString(R.string.info_author),requestBook.getAuthor()));
+        infoPage.setText(String.format(resources.getString(R.string.info_page),requestBook.getPage()));
 
         LinearLayout infoCard = findViewById(R.id.book_info);
-        infoCard.setOnClickListener(view1 -> {
-//            showInfoChangeDialog(requestBook);
-//            changeInfo(view,infoName,infoAuthor,infoPage,requestBook);
-        });
+        infoCard.setOnClickListener(view1 -> DialogsHelper.showInfoChangeDialog(context,requestBook,this));
+
         TextView confirm = findViewById(R.id.insert_confirm);
         TextView cancel = findViewById(R.id.insert_cancel);
         confirm.setOnClickListener(view1 -> {
@@ -70,11 +78,14 @@ public class InfoDialog extends BottomPopupView {
         cancel.setOnClickListener(view1 -> dismiss());
     }
 
-    private void changeInfo(TextView infoName, TextView infoAuthor, TextView infoPage, RequestBook book) {
+    @Override
+    public void refreshInfo(RequestBook book) {
+        TextView infoName = findViewById(R.id.book_info_name);
+        TextView infoAuthor = findViewById(R.id.book_info_author);
+        TextView infoPage = findViewById(R.id.book_info_page);
         Resources resources = getResources();
         infoName.setText(String.format(resources.getString(R.string.info_name),book.getName()));
         infoAuthor.setText(String.format(resources.getString(R.string.info_author),book.getAuthor()));
         infoPage.setText(String.format(resources.getString(R.string.info_page),book.getPage()));
     }
-
 }

@@ -20,6 +20,11 @@ import com.lxj.xpopup.core.CenterPopupView;
 public class AddDialog extends CenterPopupView {
     private DialogCallback callback;
     private Context context;
+
+    public AddDialog(@NonNull Context context) {
+        super(context);
+    }
+
     public AddDialog(@NonNull Context context, DialogCallback callback) {
         super(context);
         this.context = context;
@@ -38,7 +43,6 @@ public class AddDialog extends CenterPopupView {
         scanAdd.setOnClickListener(v -> {
             dismissWith(() -> callback.scanBarcode());
         });
-
     }
 
     @Override

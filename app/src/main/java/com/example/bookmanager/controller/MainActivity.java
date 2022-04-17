@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements BookOperateListen
     private List<Book> data = new ArrayList<>();
     private BookAdapter adapter = new BookAdapter(this, data, false);
     private BookOperator operator = new BookOperator(this);
-    private BookDialogs dialogs = new BookDialogs(this);
 
     private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

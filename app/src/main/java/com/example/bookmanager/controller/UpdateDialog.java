@@ -28,6 +28,10 @@ public class UpdateDialog extends CenterPopupView {
     private int position;
     private List<Book> data;
 
+    public UpdateDialog(@NonNull Context context) {
+        super(context);
+    }
+
     public UpdateDialog(@NonNull Context context, int position, List<Book> data, DialogCallback callback) {
         super(context);
         this.context = context;

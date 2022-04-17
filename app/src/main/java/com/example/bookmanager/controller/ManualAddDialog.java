@@ -27,6 +27,10 @@ public class ManualAddDialog extends CenterPopupView {
     private DialogCallback callback;
     private Context context;
 
+    public ManualAddDialog(@NonNull Context context) {
+        super(context);
+    }
+
     public ManualAddDialog(@NonNull Context context, DialogCallback callback) {
         super(context);
         this.context = context;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:cardCornerRadius="15dp"
         android:background="@drawable/shape_sheet_dialog">
@@ -18,9 +18,18 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"/>
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:contentDescription="@string/book_cover"
+                android:id="@+id/book_cover"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitCenter"
+                android:layout_marginBottom="10dp"/>
+
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp">
@@ -32,7 +41,7 @@
                     android:textSize="15sp"/>
             <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:maxLines="1"
                     android:id="@+id/input_book_name"
                     android:autofillHints="name"
@@ -42,7 +51,7 @@
         </LinearLayout>
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp">
@@ -54,7 +63,7 @@
                     android:textSize="15sp"/>
             <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:maxLines="1"
                     android:id="@+id/input_book_author"
                     android:autofillHints="name"
@@ -64,7 +73,7 @@
         </LinearLayout>
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp">
@@ -76,7 +85,7 @@
                     android:textSize="15sp"/>
             <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:maxLines="1"
                     android:id="@+id/input_book_page"
                     android:autofillHints="name"

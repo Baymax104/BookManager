@@ -49,9 +49,12 @@ public class RequestHelper {
                     if (body != null) {
                         String result = body.string();
                         RequestBook requestBook = parse(result);
+                        if (requestBook == null) {
+                            throw new JSONException("不合法的数据");
+                        }
                         callback.getRequestBook(requestBook);
                     }
-                } catch (JSONException | IOException e) {
+                } catch (IOException | JSONException e) {
                     callback.getRequestError(e);
                 }
             }

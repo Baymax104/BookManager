@@ -1,6 +1,5 @@
-package com.example.bookmanager.view;
+package com.example.bookmanager.controller;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.callbacks.OnItemClickListener;
 import com.example.bookmanager.domain.Book;
 import com.google.android.material.card.MaterialCardView;
 
@@ -71,7 +71,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_item_layout, parent, false);
         return new ViewHolder(view);
     }
 

@@ -1,4 +1,4 @@
-package com.example.bookmanager.view;
+package com.example.bookmanager.controller.callbacks;
 
 import android.graphics.Color;
 
@@ -33,13 +33,13 @@ public class BookTouchCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-        callback.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        callback.onMove(viewHolder.getAbsoluteAdapterPosition(), target.getAbsoluteAdapterPosition());
         return true;
     }
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        callback.onSwiped(viewHolder.getAdapterPosition());
+        callback.onSwiped(viewHolder.getAbsoluteAdapterPosition());
     }
 
     @Override

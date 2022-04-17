@@ -1,11 +1,9 @@
 package com.example.bookmanager.model;
 
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
 import com.example.bookmanager.domain.RequestBook;
-import com.example.bookmanager.view.IRequestCallback;
+import com.example.bookmanager.controller.callbacks.IRequestCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,13 +21,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-/**
- * @Description
- * @Author Jake
- * @email wzy1048168235@163.com
- * @Date 2022/4/16 17:15
- * @Version
- */
 public class RequestHelper {
 
     // 申请权限
@@ -99,7 +90,5 @@ public class RequestHelper {
     private static boolean isValid(int ret, String msg, JSONObject result) {
         return  ret == 0 && "请求成功".equals(msg) && !result.isNull("data");
     }
-
-
 
 }

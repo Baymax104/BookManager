@@ -1,4 +1,4 @@
-package com.example.bookmanager.view;
+package com.example.bookmanager.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,17 +17,19 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.callbacks.BookTouchCallback;
+import com.example.bookmanager.controller.callbacks.IMoveSwipeCallback;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookOperator;
-import com.example.bookmanager.model.BookOperatorListener;
+import com.example.bookmanager.model.BookOperateListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCallback, BookOperatorListener {
+public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCallback, BookOperateListener {
 
     private RecyclerView bookList;
     private List<Book> data = new ArrayList<>();

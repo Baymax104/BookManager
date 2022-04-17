@@ -6,12 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.bookmanager.domain.Book;
-import com.example.bookmanager.domain.BookSQLHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.callback.Callback;
 
 /**
  * @Description
@@ -33,7 +30,7 @@ public class BookOperator implements IBookOperator {
     }
 
     @Override
-    public void insert(Book book, BookOperatorListener listener) {
+    public void insert(Book book, BookOperateListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         List<Book> data;
         // 插入前查询是否存在相同记录
@@ -86,7 +83,7 @@ public class BookOperator implements IBookOperator {
     }
 
     @Override
-    public void query(BookOperatorListener listener) {
+    public void query(BookOperateListener listener) {
         try {
             List<Book> data = getDataAfterOperate();
             if (data == null) {
@@ -99,7 +96,7 @@ public class BookOperator implements IBookOperator {
     }
 
     @Override
-    public void update(Book book, BookOperatorListener listener) {
+    public void update(Book book, BookOperateListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         List<Book> data;
         String queryExistsSQL = "select * from Book where name=? and author=?";
@@ -131,7 +128,7 @@ public class BookOperator implements IBookOperator {
     }
 
     @Override
-    public void delete(Book book, int position, BookOperatorListener listener) {
+    public void delete(Book book, int position, BookOperateListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         List<Book> data;
         db.beginTransaction();
@@ -157,7 +154,7 @@ public class BookOperator implements IBookOperator {
     }
 
     @Override
-    public void swap(Book fromBook, Book toBook, int fromPosition, int toPosition, BookOperatorListener listener) {
+    public void swap(Book fromBook, Book toBook, int fromPosition, int toPosition, BookOperateListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         List<Book> data;
         String fromId, toId;

@@ -1,4 +1,4 @@
-package com.example.bookmanager.domain;
+package com.example.bookmanager.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

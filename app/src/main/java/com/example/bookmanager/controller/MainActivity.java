@@ -1,4 +1,4 @@
-package com.example.bookmanager.view;
+package com.example.bookmanager.controller;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,12 +22,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.callbacks.IRequestCallback;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.RequestBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookOperator;
-import com.example.bookmanager.model.BookOperatorListener;
+import com.example.bookmanager.model.BookOperateListener;
 import com.example.bookmanager.model.RequestHelper;
+import com.example.bookmanager.controller.callbacks.DialogCallback;
+import com.example.bookmanager.model.DialogsHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.king.zxing.CameraScan;
@@ -42,7 +45,7 @@ import java.util.List;
 
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
-public class MainActivity extends AppCompatActivity implements BookOperatorListener,DialogCallback,IRequestCallback {
+public class MainActivity extends AppCompatActivity implements BookOperateListener,DialogCallback, IRequestCallback {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView leftMenu;
@@ -52,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
     private BookAdapter adapter = new BookAdapter(this, data, false);
     private BookOperator operator = new BookOperator(this);
     private BookDialogs dialogs = new BookDialogs(this);
-    private RequestBook requestBook = null;
 
     private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -90,15 +92,11 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
         operator.query(this);
 
         // FloatingActionButton监听
-        floatingAdd.setOnClickListener(view -> dialogs.showAddDialog(R.layout.add_book_dialog, this));
-//        floatingAdd.setOnClickListener(view -> dialogs.showBottomSheetDialog(R.layout.book_info_dialog));
+        floatingAdd.setOnClickListener(view -> DialogsHelper.showAddDialog(this, this));
 
         // RecyclerView子项点击监听
-        adapter.setItemClickListener(position -> dialogs.showUpdateDialog(
-                R.layout.update_progress_dialog,
-                position,
-                data,
-                this
+        adapter.setItemClickListener(position -> DialogsHelper.showUpdateDialog(
+                this,position,data,this
         ));
 
     }
@@ -194,8 +192,8 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
 
     @Override
     public void getRequestBook(RequestBook requestBook) {
-        runOnUiThread(() -> dialogs.showBottomSheetDialog(
-                R.layout.book_info_dialog,requestBook,this
+        runOnUiThread(() -> DialogsHelper.showInfoDialog(
+                this,requestBook,this
         ));
     }
 

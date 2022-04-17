@@ -21,4 +21,11 @@
     <string name="input_page_hint">请输入总页数</string>
     <string name="input_book_progress">更新进度</string>
     <string name="book_cover">图书封面</string>
+    <string name="info_change">修改图书信息</string>
+    <string name="info_name">书名：%1$s</string>
+    <string name="info_author">作者：%1$s</string>
+    <string name="info_page">页数：%1$d</string>
+    <string name="info_publishing">出版社：%1$s</string>
+    <string name="info_isbn">ISBN：%1$s</string>
+    <string name="info_description">简介：%1$s</string>
 </resources>

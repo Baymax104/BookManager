@@ -1,15 +1,7 @@
-package com.example.bookmanager.view;
+package com.example.bookmanager.controller;
 
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.telecom.StatusHints;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,13 +11,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.bookmanager.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.Reader;
 import com.google.zxing.Result;
-import com.google.zxing.oned.MultiFormatOneDReader;
 import com.king.zxing.CaptureActivity;
 import com.king.zxing.DecodeConfig;
-import com.king.zxing.DecodeFormatManager;
-import com.king.zxing.analyze.BarcodeFormatAnalyzer;
 import com.king.zxing.analyze.MultiFormatAnalyzer;
 
 import java.util.ArrayList;

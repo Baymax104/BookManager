@@ -20,11 +20,17 @@
         <item name="overlapAnchor">false</item>
     </style>
 
-    <!--实现BottomSheetDialog圆角效果-->
+    <!--BottomSheetDialog圆角效果-->
     <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
     </style>
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!--去除修改信息Dialog的弹出动画-->
+    <style name="NoAnimationDialog" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_anim</item>
+        <item name="android:windowExitAnimation">@anim/dialog_anim</item>
     </style>
 </resources>

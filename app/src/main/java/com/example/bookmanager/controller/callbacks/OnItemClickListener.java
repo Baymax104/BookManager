@@ -1,4 +1,4 @@
-package com.example.bookmanager.view;
+package com.example.bookmanager.controller.callbacks;
 
 /**
  * @Description RecyclerView子项外部监听接口

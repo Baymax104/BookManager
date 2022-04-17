@@ -1,16 +1,18 @@
-package com.example.bookmanager.view;
+package com.example.bookmanager.controller;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.RequestBook;
+import com.example.bookmanager.controller.callbacks.DialogCallback;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -43,8 +46,8 @@ public class BookDialogs {
         this.context = context;
     }
 
-    public void showAddDialog(int layoutResId, DialogCallback callback) {
-        View view = LayoutInflater.from(context).inflate(layoutResId, null, false);
+    public void showAddDialog(DialogCallback callback) {
+        View view = LayoutInflater.from(context).inflate(R.layout.add_book_dialog, null, false);
         AlertDialog dialog = new AlertDialog.Builder(context).setView(view).create();
 
         // 设置对话框背景为透明
@@ -58,7 +61,7 @@ public class BookDialogs {
         TextView scanAdd = view.findViewById(R.id.scan_add);
         manualAdd.setOnClickListener(v -> {
             Log.d("Dialogs", "监听");
-            showManualAddDialog(R.layout.manual_insert_dialog, callback);
+            showManualAddDialog(callback);
             dialog.dismiss();
         });
         scanAdd.setOnClickListener(v -> {
@@ -68,8 +71,8 @@ public class BookDialogs {
         dialog.show();
     }
 
-    public void showManualAddDialog(int layoutResId, DialogCallback callback) {
-        View view = LayoutInflater.from(context).inflate(layoutResId, null, false);
+    public void showManualAddDialog(DialogCallback callback) {
+        View view = LayoutInflater.from(context).inflate(R.layout.manual_add_dialog, null, false);
         AlertDialog dialog = new AlertDialog.Builder(context).setView(view).create();
 
         // 设置点击空白部分对话框不消失
@@ -105,8 +108,8 @@ public class BookDialogs {
         dialog.show();
     }
 
-    public void showUpdateDialog(int layoutRedId, int updatePosition, List<Book> data, DialogCallback callback) {
-        View view = LayoutInflater.from(context).inflate(layoutRedId, null, false);
+    public void showUpdateDialog(int updatePosition, List<Book> data, DialogCallback callback) {
+        View view = LayoutInflater.from(context).inflate(R.layout.update_progress_dialog, null, false);
         AlertDialog dialog = new AlertDialog.Builder(context).setView(view).create();
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -133,9 +136,9 @@ public class BookDialogs {
         dialog.show();
     }
 
-    public void showBottomSheetDialog(int layoutResId, RequestBook requestBook, DialogCallback callback) {
+    public void showBottomSheetDialog(RequestBook book, DialogCallback callback) {
         BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialog);
-        View view = LayoutInflater.from(context).inflate(layoutResId,null,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.book_info_dialog,null,false);
         dialog.setContentView(view);
         // 设置固定高度为最高
         BottomSheetBehavior<FrameLayout> behavior = dialog.getBehavior();
@@ -152,22 +155,79 @@ public class BookDialogs {
         TextView infoIsbn = view.findViewById(R.id.book_info_isbn);
         TextView infoDescription = view.findViewById(R.id.book_info_description);
 
-        Glide.with(view).load(requestBook.getPhotoUrl()).into(bookCover);
-        infoName.setText("书名："+requestBook.getName());
-        infoAuthor.setText("作者："+requestBook.getAuthor());
-        infoPublishing.setText("出版社："+requestBook.getPublishing());
-        infoPage.setText("页数："+requestBook.getPage());
-        infoIsbn.setText("ISBN："+requestBook.getIsbn());
-        infoDescription.setText("简介："+requestBook.getDescription());
+        Glide.with(view).load(book.getPhotoUrl()).into(bookCover);
+        Resources resources = view.getResources();
+        infoPublishing.setText(String.format(resources.getString(R.string.info_publishing),book.getPublishing()));
+        infoIsbn.setText(String.format(resources.getString(R.string.info_isbn), book.getIsbn()));
+        infoDescription.setText(String.format(resources.getString(R.string.info_description),book.getDescription()));
+        changeInfo(view,infoName,infoAuthor,infoPage,book);
 
+        LinearLayout infoCard = view.findViewById(R.id.book_info);
+        infoCard.setOnClickListener(view1 -> {
+            showInfoChangeDialog(book);
+            changeInfo(view,infoName,infoAuthor,infoPage,book);
+        });
         TextView confirm = view.findViewById(R.id.insert_confirm);
         TextView cancel = view.findViewById(R.id.insert_cancel);
         confirm.setOnClickListener(view1 -> {
-            callback.insertBook(requestBook);
+            callback.insertBook(book);
             dialog.dismiss();
         });
         cancel.setOnClickListener(view1 -> dialog.dismiss());
         dialog.show();
     }
+    private void changeInfo(View view, TextView infoName, TextView infoAuthor, TextView infoPage, RequestBook book) {
+        Resources resources = view.getResources();
+        infoName.setText(String.format(resources.getString(R.string.info_name),book.getName()));
+        infoAuthor.setText(String.format(resources.getString(R.string.info_author),book.getAuthor()));
+        infoPage.setText(String.format(resources.getString(R.string.info_page),book.getPage()));
+    }
 
+    private void showInfoChangeDialog(RequestBook book) {
+        View view = LayoutInflater.from(context).inflate(R.layout.info_change_dialog,null,false);
+        AlertDialog dialog = new AlertDialog.Builder(context).setView(view).create();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Window window = dialog.getWindow();
+        window.setWindowAnimations(R.style.NoAnimationDialog);
+//        BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialog);
+//        dialog.setContentView(view);
+//        // 设置固定高度为最高
+//        BottomSheetBehavior<FrameLayout> behavior = dialog.getBehavior();
+//        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        Point point = new Point();
+//        manager.getDefaultDisplay().getSize(point);
+//        behavior.setPeekHeight(point.y);
+//        AlphaAnimation alphaAnim = new AlphaAnimation(0, 0);
+//        alphaAnim.setDuration(3000);
+//        alphaAnim.setFillAfter(true);
+
+
+
+
+        TextView confirm = view.findViewById(R.id.change_confirm);
+        TextView cancel = view.findViewById(R.id.change_cancel);
+        cancel.setOnClickListener(view1 -> dialog.dismiss());
+        confirm.setOnClickListener(view1 -> {
+            EditText inputName = view.findViewById(R.id.input_book_name);
+            EditText inputAuthor = view.findViewById(R.id.input_book_author);
+            EditText inputPage = view.findViewById(R.id.input_book_page);
+
+            if (inputName != null && !inputName.getText().toString().equals("")) {
+                String name = inputName.getText().toString();
+                book.setName(name);
+            }
+            if (inputAuthor != null && !inputAuthor.getText().toString().equals("")) {
+                String author = inputAuthor.getText().toString();
+                book.setAuthor(author);
+            }
+            if (inputPage != null && !inputPage.getText().toString().equals("")) {
+                int page = Integer.parseInt(inputPage.getText().toString());
+                book.setPage(page);
+            }
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
 }

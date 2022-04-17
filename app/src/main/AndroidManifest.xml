@@ -19,9 +19,6 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.BookManager">
         <activity
-                android:name=".view.BookInfoActivity"
-                android:exported="false" />
-        <activity
                 android:name=".view.BookEditActivity"
                 android:exported="false" />
         <activity

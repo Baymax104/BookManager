@@ -2,16 +2,24 @@ package com.example.bookmanager.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Point;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.domain.RequestBook;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -124,4 +132,42 @@ public class BookDialogs {
         cancel.setOnClickListener(view1 -> dialog.dismiss());
         dialog.show();
     }
+
+    public void showBottomSheetDialog(int layoutResId, RequestBook requestBook, DialogCallback callback) {
+        BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialog);
+        View view = LayoutInflater.from(context).inflate(layoutResId,null,false);
+        dialog.setContentView(view);
+        // 设置固定高度为最高
+        BottomSheetBehavior<FrameLayout> behavior = dialog.getBehavior();
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        manager.getDefaultDisplay().getSize(point);
+        behavior.setPeekHeight(point.y);
+
+        ImageView bookCover = view.findViewById(R.id.book_cover);
+        TextView infoName = view.findViewById(R.id.book_info_name);
+        TextView infoAuthor = view.findViewById(R.id.book_info_author);
+        TextView infoPublishing = view.findViewById(R.id.book_info_publishing);
+        TextView infoPage = view.findViewById(R.id.book_info_page);
+        TextView infoIsbn = view.findViewById(R.id.book_info_isbn);
+        TextView infoDescription = view.findViewById(R.id.book_info_description);
+
+        Glide.with(view).load(requestBook.getPhotoUrl()).into(bookCover);
+        infoName.setText("书名："+requestBook.getName());
+        infoAuthor.setText("作者："+requestBook.getAuthor());
+        infoPublishing.setText("出版社："+requestBook.getPublishing());
+        infoPage.setText("页数："+requestBook.getPage());
+        infoIsbn.setText("ISBN："+requestBook.getIsbn());
+        infoDescription.setText("简介："+requestBook.getDescription());
+
+        TextView confirm = view.findViewById(R.id.insert_confirm);
+        TextView cancel = view.findViewById(R.id.insert_cancel);
+        confirm.setOnClickListener(view1 -> {
+            callback.insertBook(requestBook);
+            dialog.dismiss();
+        });
+        cancel.setOnClickListener(view1 -> dialog.dismiss());
+        dialog.show();
+    }
+
 }

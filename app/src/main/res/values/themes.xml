@@ -14,7 +14,17 @@
         <!-- Customize your theme here. -->
         <item name="android:textColorSecondary">@color/main_color</item>
     </style>
+
+    <!--溢出菜单不覆盖焦点-->
     <style name="OverflowMenuTheme" parent="Widget.AppCompat.PopupMenu.Overflow">
         <item name="overlapAnchor">false</item>
+    </style>
+
+    <!--实现BottomSheetDialog圆角效果-->
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+    </style>
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
 
         // FloatingActionButton监听
         floatingAdd.setOnClickListener(view -> dialogs.showAddDialog(R.layout.add_book_dialog, this));
+//        floatingAdd.setOnClickListener(view -> dialogs.showBottomSheetDialog(R.layout.book_info_dialog));
 
         // RecyclerView子项点击监听
         adapter.setItemClickListener(position -> dialogs.showUpdateDialog(
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
                 data,
                 this
         ));
+
     }
 
     private void initView() {
@@ -192,9 +194,9 @@ public class MainActivity extends AppCompatActivity implements BookOperatorListe
 
     @Override
     public void getRequestBook(RequestBook requestBook) {
-        Looper.prepare();
-        this.requestBook = requestBook;
-        Looper.loop();
+        runOnUiThread(() -> dialogs.showBottomSheetDialog(
+                R.layout.book_info_dialog,requestBook,this
+        ));
     }
 
     @Override

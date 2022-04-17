@@ -77,7 +77,11 @@ public class RequestHelper {
         JSONObject data = allResult.getJSONObject("data");
         String name = data.getString("name");
         String author = data.getString("author");
-        int page = Integer.parseInt(data.getString("pages"));
+        String pageData = data.getString("pages");
+        int page = 0;
+        if (!pageData.equals("")) {
+            page = Integer.parseInt(data.getString("pages"));
+        }
         String isbn = data.getString("code");
         String publishing = data.getString("publishing");
         String photoUrl = data.getString("photoUrl");

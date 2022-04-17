@@ -20,4 +20,5 @@
     <string name="input_author_hint">请输入作者</string>
     <string name="input_page_hint">请输入总页数</string>
     <string name="input_book_progress">更新进度</string>
+    <string name="book_cover">图书封面</string>
 </resources>

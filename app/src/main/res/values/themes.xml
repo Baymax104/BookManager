@@ -27,10 +27,4 @@
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
-
-    <!--去除修改信息Dialog的弹出动画-->
-    <style name="NoAnimationDialog" parent="@android:style/Animation.Dialog">
-        <item name="android:windowEnterAnimation">@anim/dialog_anim</item>
-        <item name="android:windowExitAnimation">@anim/dialog_anim</item>
-    </style>
 </resources>

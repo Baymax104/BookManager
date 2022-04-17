@@ -12,7 +12,6 @@ import com.example.bookmanager.controller.InfoDisplayDialog;
 import com.example.bookmanager.controller.ManualAddDialog;
 import com.example.bookmanager.controller.UpdateDialog;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.enums.PopupAnimation;
 
 import java.util.List;
 

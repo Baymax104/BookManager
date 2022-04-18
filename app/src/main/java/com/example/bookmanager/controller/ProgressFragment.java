@@ -65,8 +65,12 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    ProgressBook[] passData = (ProgressBook[]) result.getData().getSerializableExtra("BookData");
-                    data = Arrays.asList(passData);
+                    Book[] passData = (Book[]) result.getData().getSerializableExtra("BookData");
+                    List<ProgressBook> list = new ArrayList<>();
+                    for (Book b : passData) {
+                        list.add((ProgressBook) b);
+                    }
+                    data = list;
                     adapter.setData(data);
                     adapter.notifyDataSetChanged();
                 }

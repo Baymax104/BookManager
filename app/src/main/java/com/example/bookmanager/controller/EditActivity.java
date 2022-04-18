@@ -20,7 +20,6 @@ import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.BookTouchCallback;
 import com.example.bookmanager.controller.callbacks.IMoveSwipeCallback;
 import com.example.bookmanager.domain.Book;
-import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookOperator;
 import com.example.bookmanager.model.BookType;
@@ -32,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 
 public class EditActivity extends AppCompatActivity implements IMoveSwipeCallback, OperatorListener {
@@ -40,7 +40,16 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
     private List<Book> data;
     private BookAdapter adapter;
     private BookOperator operator;
+    private Stack<DelItem> delStack = new Stack<>();
 
+    private static class DelItem {
+        Book delBook;
+        int position;
+        public DelItem(Book delBook,int position) {
+            this.delBook = delBook;
+            this.position = position;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +80,8 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
         // 获取数据，同时根据类型初始化operator和adapter
         Intent intent = getIntent();
         Book[] passData = (Book[]) intent.getSerializableExtra("BookData");
-        data = Arrays.asList(passData);
+        // 返回值不是util.ArrayList，是Arrays的内部类，直接使用会抛出异常
+        data = new ArrayList<>(Arrays.asList(passData));
         BookType type = (BookType) intent.getSerializableExtra("Type");
         switch (type) {
             case ProgressBook:
@@ -94,28 +104,35 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
 
     @Override
     public void onMove(int fromPosition, int toPosition) {
-        Book fromProgressBook = data.get(fromPosition);
-        Book toProgressBook = data.get(toPosition);
-        operator.swap(fromProgressBook, toProgressBook, fromPosition, toPosition, this);
+        Book fromBook = data.get(fromPosition);
+        Book toBook = data.get(toPosition);
+        operator.swap(fromBook, toBook, fromPosition, toPosition, this);
     }
 
     @Override
     public void onSwiped(int position) {
-        Book deletedProgressBook = data.get(position);
+        Book delBook = data.get(position);
+        // 将删除的子项先压栈，撤销时出栈，在退出Activity时删除
+        delStack.push(new DelItem(delBook,position));
+        data.remove(position);
+        adapter.notifyItemRemoved(position);
         Snackbar snackbar = Snackbar.make(bookList, "已删除", Snackbar.LENGTH_LONG)
                 .setBackgroundTint(Color.parseColor("#1e90ff"))
                 .setTextColor(Color.WHITE)
                 .setAction("撤销", view -> {
-                    data.add(position,  deletedProgressBook);
+                    data.add(position,  delBook);
+                    delStack.pop();
                     adapter.notifyItemInserted(position);
                 });
         snackbar.show();
-        // TODO 撤销恢复后重复删除
-        operator.delete(deletedProgressBook, position, this);
     }
 
     @Override
     public void onBackPressed() {
+        while (!delStack.empty()) {
+            DelItem item = delStack.pop();
+            operator.delete(item.delBook,item.position,this);
+        }
         Book[] passData = data.toArray(new Book[0]);
         setResult(RESULT_OK, new Intent().putExtra("BookData", passData));
         super.onBackPressed();
@@ -125,6 +142,11 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
+            // 出栈删除
+            while (!delStack.empty()) {
+                DelItem delItem = delStack.pop();
+                operator.delete(delItem.delBook,delItem.position,this);
+            }
             Book[] passData = data.toArray(new Book[0]);
             setResult(RESULT_OK, new Intent().putExtra("BookData", passData));
             finish();

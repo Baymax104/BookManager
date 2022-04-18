@@ -8,15 +8,6 @@
         </shape>
     </item>
 
-    <item android:id="@android:id/secondaryProgress">
-        <scale android:scaleWidth="100%">
-            <shape>
-                <corners android:radius="20dp"/>
-                <solid android:color="#FF11ce33"/>
-            </shape>
-        </scale>
-    </item>
-
     <item android:id="@android:id/progress">
         <scale android:scaleWidth="100%"
                 android:drawable="@drawable/shape_progress_bar"   />

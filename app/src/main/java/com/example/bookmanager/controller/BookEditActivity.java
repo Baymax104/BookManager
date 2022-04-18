@@ -90,6 +90,7 @@ public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCal
                     adapter.notifyItemInserted(position);
                 });
         snackbar.show();
+        // TODO 撤销恢复后重复删除
         operator.delete(deletedBook, position, this);
     }
 

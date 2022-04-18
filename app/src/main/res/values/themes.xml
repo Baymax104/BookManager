@@ -27,4 +27,8 @@
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <style name="NavigationViewButton" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/main_color</item>
+        <item name="android:textColorSecondary">@color/book_card</item>
+    </style>
 </resources>

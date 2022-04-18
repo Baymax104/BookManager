@@ -28,4 +28,6 @@
     <string name="info_publishing">出版社：%1$s</string>
     <string name="info_isbn">ISBN：%1$s</string>
     <string name="info_description">简介：%1$s</string>
+    <string name="progress">进度</string>
+    <string name="finish">读过</string>
 </resources>

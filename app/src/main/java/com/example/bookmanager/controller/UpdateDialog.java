@@ -58,7 +58,11 @@ public class UpdateDialog extends CenterPopupView {
                 if (progress <= book.getPage()) {
                     book.setProgress(progress);
                     callback.updateBook(book);
-                    dismiss();
+                    if (book.getProgress() == book.getPage()) {
+                        // TODO 弹出是否完成对话框
+                    } else {
+                        dismiss();
+                    }
                 } else {
                     Toast.makeText(context, "超过了最大页数", Toast.LENGTH_SHORT).show();
                 }

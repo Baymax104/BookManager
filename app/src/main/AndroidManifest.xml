@@ -28,10 +28,10 @@
                     </intent-filter>
         </activity>
         <activity
-                android:name=".controller.BookEditActivity"
+                android:name=".controller.EditActivity"
                 android:exported="false" />
         <activity
-                android:name=".controller.BookCapture"
+                android:name=".controller.BookCaptureActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/CaptureTheme" />
     </application>

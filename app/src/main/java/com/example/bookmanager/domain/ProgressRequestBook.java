@@ -7,16 +7,16 @@ package com.example.bookmanager.domain;
  * @Date 2022/4/16 15:17
  * @Version
  */
-public class RequestBook extends Book {
+public class ProgressRequestBook extends ProgressBook {
     private String isbn;
     private String photoUrl;
     private String publishing;
     private String description;
 
-    public RequestBook() {
+    public ProgressRequestBook() {
     }
 
-    public RequestBook(String name, String author, String addTime, int page, String isbn, String photoUrl, String publishing, String description) {
+    public ProgressRequestBook(String name, String author, String addTime, int page, String isbn, String photoUrl, String publishing, String description) {
         super(name, author, addTime, 0, page);
         this.isbn = isbn;
         this.photoUrl = photoUrl;

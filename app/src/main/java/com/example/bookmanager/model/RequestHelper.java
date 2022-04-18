@@ -2,7 +2,7 @@ package com.example.bookmanager.model;
 
 import androidx.annotation.NonNull;
 
-import com.example.bookmanager.domain.RequestBook;
+import com.example.bookmanager.domain.ProgressRequestBook;
 import com.example.bookmanager.controller.callbacks.IRequestCallback;
 
 import org.json.JSONException;
@@ -48,7 +48,7 @@ public class RequestHelper {
                     ResponseBody body = response.body();
                     if (body != null) {
                         String result = body.string();
-                        RequestBook requestBook = parse(result);
+                        ProgressRequestBook requestBook = parse(result);
                         if (requestBook == null) {
                             throw new JSONException("不合法的数据");
                         }
@@ -61,7 +61,7 @@ public class RequestHelper {
         });
     }
 
-    private static RequestBook parse(String result) throws JSONException {
+    private static ProgressRequestBook parse(String result) throws JSONException {
         JSONObject allResult = new JSONObject(result);
         int ret = allResult.getInt("ret");
         String msg = allResult.getString("msg");
@@ -83,7 +83,7 @@ public class RequestHelper {
         Date nowDate = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String addTime = dateFormat.format(nowDate);
-        return new RequestBook(
+        return new ProgressRequestBook(
                 name,author,addTime,
                 page,isbn,photoUrl,
                 publishing,description

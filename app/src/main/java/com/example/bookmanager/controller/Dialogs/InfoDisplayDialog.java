@@ -1,4 +1,4 @@
-package com.example.bookmanager.controller;
+package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
-import com.example.bookmanager.domain.RequestBook;
-import com.example.bookmanager.controller.callbacks.DialogCallback;
+import com.example.bookmanager.domain.ProgressRequestBook;
+import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.model.DialogsHelper;
 import com.lxj.xpopup.core.BottomPopupView;
 
@@ -26,15 +26,15 @@ import com.lxj.xpopup.core.BottomPopupView;
 public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCallback {
 
     private Context context;
-    private DialogCallback callback;
-    private RequestBook requestBook;
+    private IDialogCallback callback;
+    private ProgressRequestBook requestBook;
 
     public InfoDisplayDialog(@NonNull Context context) {
         super(context);
         this.context = context;
     }
 
-    public InfoDisplayDialog(@NonNull Context context, RequestBook requestBook, DialogCallback callback) {
+    public InfoDisplayDialog(@NonNull Context context, ProgressRequestBook requestBook, IDialogCallback callback) {
         super(context);
         this.context = context;
         this.callback = callback;
@@ -43,7 +43,7 @@ public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCall
 
     @Override
     protected int getImplLayoutId() {
-        return R.layout.book_info_dialog;
+        return R.layout.dialog_book_info;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCall
     }
 
     @Override
-    public void refreshInfo(RequestBook book) {
+    public void refreshInfo(ProgressRequestBook book) {
         TextView infoName = findViewById(R.id.book_info_name);
         TextView infoAuthor = findViewById(R.id.book_info_author);
         TextView infoPage = findViewById(R.id.book_info_page);

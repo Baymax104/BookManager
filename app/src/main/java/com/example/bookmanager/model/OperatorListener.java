@@ -11,7 +11,7 @@ import java.util.List;
  * @Date 2022/4/13 18:12
  * @Version
  */
-public interface BookOperateListener {
+public interface OperatorListener {
     void onSuccess(List<Book> data, int... position);
     void onError(BookException e);
 }

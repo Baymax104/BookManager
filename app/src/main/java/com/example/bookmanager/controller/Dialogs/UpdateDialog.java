@@ -1,4 +1,4 @@
-package com.example.bookmanager.controller;
+package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
 import android.widget.EditText;
@@ -8,8 +8,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.bookmanager.R;
-import com.example.bookmanager.domain.Book;
-import com.example.bookmanager.controller.callbacks.DialogCallback;
+import com.example.bookmanager.domain.ProgressBook;
+import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import java.util.List;
@@ -24,15 +24,15 @@ import java.util.List;
  */
 public class UpdateDialog extends CenterPopupView {
     private Context context;
-    private DialogCallback callback;
+    private IDialogCallback callback;
     private int position;
-    private List<Book> data;
+    private List<ProgressBook> data;
 
     public UpdateDialog(@NonNull Context context) {
         super(context);
     }
 
-    public UpdateDialog(@NonNull Context context, int position, List<Book> data, DialogCallback callback) {
+    public UpdateDialog(@NonNull Context context, int position, List<ProgressBook> data, IDialogCallback callback) {
         super(context);
         this.context = context;
         this.callback = callback;
@@ -42,7 +42,7 @@ public class UpdateDialog extends CenterPopupView {
 
     @Override
     protected int getImplLayoutId() {
-        return R.layout.update_progress_dialog;
+        return R.layout.dialog_update_progress;
     }
 
     @Override
@@ -54,11 +54,11 @@ public class UpdateDialog extends CenterPopupView {
             EditText inputProgress = findViewById(R.id.input_book_progress);
             if (inputProgress != null && !inputProgress.getText().toString().equals("")) {
                 int progress = Integer.parseInt(inputProgress.getText().toString());
-                Book book = data.get(position);
-                if (progress <= book.getPage()) {
-                    book.setProgress(progress);
-                    callback.updateBook(book);
-                    if (book.getProgress() == book.getPage()) {
+                ProgressBook progressBook = data.get(position);
+                if (progress <= progressBook.getPage()) {
+                    progressBook.setProgress(progress);
+                    callback.updateBook(progressBook);
+                    if (progressBook.getProgress() == progressBook.getPage()) {
                         // TODO 弹出是否完成对话框
                     } else {
                         dismiss();

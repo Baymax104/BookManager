@@ -1,6 +1,6 @@
 package com.example.bookmanager.controller.callbacks;
 
-import com.example.bookmanager.domain.RequestBook;
+import com.example.bookmanager.domain.ProgressRequestBook;
 
 /**
  * @Description
@@ -10,6 +10,6 @@ import com.example.bookmanager.domain.RequestBook;
  * @Version
  */
 public interface IRequestCallback {
-    void getRequestBook(RequestBook requestBook);
+    void getRequestBook(ProgressRequestBook requestBook);
     void getRequestError(Exception e);
 }

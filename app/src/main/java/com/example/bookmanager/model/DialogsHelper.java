@@ -2,15 +2,15 @@ package com.example.bookmanager.model;
 
 import android.content.Context;
 
-import com.example.bookmanager.controller.InfoChangeDialog;
+import com.example.bookmanager.controller.Dialogs.InfoChangeDialog;
 import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
-import com.example.bookmanager.domain.Book;
-import com.example.bookmanager.domain.RequestBook;
-import com.example.bookmanager.controller.AddDialog;
-import com.example.bookmanager.controller.callbacks.DialogCallback;
-import com.example.bookmanager.controller.InfoDisplayDialog;
-import com.example.bookmanager.controller.ManualAddDialog;
-import com.example.bookmanager.controller.UpdateDialog;
+import com.example.bookmanager.domain.ProgressBook;
+import com.example.bookmanager.domain.ProgressRequestBook;
+import com.example.bookmanager.controller.Dialogs.AddDialog;
+import com.example.bookmanager.controller.callbacks.IDialogCallback;
+import com.example.bookmanager.controller.Dialogs.InfoDisplayDialog;
+import com.example.bookmanager.controller.Dialogs.ManualAddDialog;
+import com.example.bookmanager.controller.Dialogs.UpdateDialog;
 import com.lxj.xpopup.XPopup;
 
 import java.util.List;
@@ -24,14 +24,14 @@ import java.util.List;
  */
 public class DialogsHelper {
 
-    public static void showAddDialog(Context context, DialogCallback callback) {
+    public static void showAddDialog(Context context, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true)
                 .asCustom(new AddDialog(context, callback))
                 .show();
     }
 
-    public static void showManualAddDialog(Context context, DialogCallback callback) {
+    public static void showManualAddDialog(Context context, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true)
                 .dismissOnTouchOutside(false)
@@ -39,7 +39,7 @@ public class DialogsHelper {
                 .show();
     }
 
-    public static void showUpdateDialog(Context context, int position, List<Book> data, DialogCallback callback) {
+    public static void showUpdateDialog(Context context, int position, List<ProgressBook> data, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .dismissOnTouchOutside(true)
                 .dismissOnTouchOutside(false)
@@ -47,13 +47,13 @@ public class DialogsHelper {
                 .show();
     }
 
-    public static void showInfoDialog(Context context, RequestBook requestBook, DialogCallback callback) {
+    public static void showInfoDialog(Context context, ProgressRequestBook requestBook, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .asCustom(new InfoDisplayDialog(context,requestBook,callback))
                 .show();
     }
 
-    public static void showInfoChangeDialog(Context context, RequestBook requestBook, InfoChangeCallback callback) {
+    public static void showInfoChangeDialog(Context context, ProgressRequestBook requestBook, InfoChangeCallback callback) {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true)
                 .asCustom(new InfoChangeDialog(context,requestBook,callback))

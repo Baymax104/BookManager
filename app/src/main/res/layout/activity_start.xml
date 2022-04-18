@@ -10,7 +10,7 @@
         android:fitsSystemWindows="true">
 
     <!--第一个控件为主页面-->
-    <include layout="@layout/main_content_layout"/>
+    <include layout="@layout/layout_main_content"/>
 
     <!--第二个控件为左侧菜单-->
     <com.google.android.material.navigation.NavigationView

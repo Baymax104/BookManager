@@ -28,7 +28,7 @@ import java.util.Map;
  * @Date 2022/4/15 19:08
  * @Version
  */
-public class BookCapture extends CaptureActivity {
+public class BookCaptureActivity extends CaptureActivity {
     private static Map<DecodeHintType,Object> EAN_13_HINTS = new EnumMap<>(DecodeHintType.class);
 
     static { // 设置EAN13格式

@@ -1,4 +1,4 @@
-package com.example.bookmanager.controller;
+package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
 import android.widget.EditText;
@@ -8,8 +8,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.bookmanager.R;
-import com.example.bookmanager.domain.Book;
-import com.example.bookmanager.controller.callbacks.DialogCallback;
+import com.example.bookmanager.domain.ProgressBook;
+import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import java.text.SimpleDateFormat;
@@ -24,14 +24,14 @@ import java.util.Locale;
  * @Version
  */
 public class ManualAddDialog extends CenterPopupView {
-    private DialogCallback callback;
+    private IDialogCallback callback;
     private Context context;
 
     public ManualAddDialog(@NonNull Context context) {
         super(context);
     }
 
-    public ManualAddDialog(@NonNull Context context, DialogCallback callback) {
+    public ManualAddDialog(@NonNull Context context, IDialogCallback callback) {
         super(context);
         this.context = context;
         this.callback = callback;
@@ -58,8 +58,8 @@ public class ManualAddDialog extends CenterPopupView {
                 Date nowTime = new Date(System.currentTimeMillis());
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 String addTime = dateFormat.format(nowTime);
-                Book book = new Book(name, author, addTime, 0, page);
-                callback.insertBook(book);
+                ProgressBook progressBook = new ProgressBook(name, author, addTime, 0, page);
+                callback.insertBook(progressBook);
                 dismiss();
             } else {
                 Toast.makeText(context, "请输入完整信息", Toast.LENGTH_SHORT).show();
@@ -69,6 +69,6 @@ public class ManualAddDialog extends CenterPopupView {
 
     @Override
     protected int getImplLayoutId() {
-        return R.layout.manual_add_dialog;
+        return R.layout.dialog_manual_add;
     }
 }

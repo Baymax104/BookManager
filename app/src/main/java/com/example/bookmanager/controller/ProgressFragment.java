@@ -2,14 +2,11 @@ package com.example.bookmanager.controller;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +16,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -28,20 +23,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmanager.R;
-import com.example.bookmanager.controller.BookAdapter;
-import com.example.bookmanager.controller.BookCapture;
-import com.example.bookmanager.controller.BookEditActivity;
-import com.example.bookmanager.controller.callbacks.DialogCallback;
+import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.controller.callbacks.IRequestCallback;
 import com.example.bookmanager.domain.Book;
-import com.example.bookmanager.domain.RequestBook;
+import com.example.bookmanager.domain.ProgressBook;
+import com.example.bookmanager.domain.ProgressRequestBook;
 import com.example.bookmanager.model.BookException;
-import com.example.bookmanager.model.BookOperateListener;
-import com.example.bookmanager.model.BookOperator;
+import com.example.bookmanager.model.BookType;
+import com.example.bookmanager.model.OperatorListener;
+import com.example.bookmanager.model.ProgressOperator;
 import com.example.bookmanager.model.DialogsHelper;
 import com.example.bookmanager.model.RequestHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.king.zxing.CameraScan;
 
 import org.json.JSONException;
@@ -50,9 +43,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-
-import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 /**
  * @Description
@@ -61,23 +51,21 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
  * @Date 2022/4/17 21:02
  * @Version
  */
-public class ProgressFragment extends Fragment implements BookOperateListener, DialogCallback, IRequestCallback {
+public class ProgressFragment extends Fragment implements OperatorListener, IDialogCallback, IRequestCallback {
 
-    private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private NavigationView leftMenu;
     private FloatingActionButton floatingAdd;
     private RecyclerView bookList;
-    private List<Book> data = new ArrayList<>();
-    private BookAdapter adapter;
-    private BookOperator operator;
+    private List<ProgressBook> data = new ArrayList<>();
+    private ProgressAdapter adapter;
+    private ProgressOperator operator;
     private View view;
 
     private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Book[] passData = (Book[]) result.getData().getSerializableExtra("BookData");
+                    ProgressBook[] passData = (ProgressBook[]) result.getData().getSerializableExtra("BookData");
                     data = Arrays.asList(passData);
                     adapter.setData(data);
                     adapter.notifyDataSetChanged();
@@ -106,8 +94,8 @@ public class ProgressFragment extends Fragment implements BookOperateListener, D
         setHasOptionsMenu(true);
         initView();
 
-        adapter = new BookAdapter(getContext(), data, false);
-        operator = new BookOperator(getContext());
+        adapter = new ProgressAdapter(getContext(), data, false);
+        operator = new ProgressOperator(getContext());
         // RecyclerView绑定
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         bookList.setLayoutManager(layoutManager);
@@ -120,16 +108,13 @@ public class ProgressFragment extends Fragment implements BookOperateListener, D
         floatingAdd.setOnClickListener(v -> DialogsHelper.showAddDialog(getContext(), this));
 
         // RecyclerView子项点击监听
-        adapter.setItemClickListener(position -> DialogsHelper.showUpdateDialog(
+        adapter.setOnItemClickListener(position -> DialogsHelper.showUpdateDialog(
                 getContext(),position,data,this
         ));
-
     }
 
     private void initView() {
         drawerLayout = requireActivity().findViewById(R.id.drawer_layout);
-        toolbar = view.findViewById(R.id.tool_bar);
-        leftMenu = view.findViewById(R.id.nav_view);
         floatingAdd = view.findViewById(R.id.floating_add);
         bookList = view.findViewById(R.id.book_list);
     }
@@ -138,9 +123,10 @@ public class ProgressFragment extends Fragment implements BookOperateListener, D
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.edit_list) {
-            Intent intent = new Intent(getContext(), BookEditActivity.class);
-            Book[] passData = data.toArray(new Book[0]);
+            Intent intent = new Intent(getContext(), EditActivity.class);
+            ProgressBook[] passData = data.toArray(new ProgressBook[0]);
             intent.putExtra("BookData", passData);
+            intent.putExtra("Type", BookType.ProgressBook);
             editLauncher.launch(intent);
         } else if (id == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START);
@@ -150,23 +136,27 @@ public class ProgressFragment extends Fragment implements BookOperateListener, D
 
     @Override
     public void scanBarcode() {
-        Intent intent = new Intent(getContext(), BookCapture.class);
+        Intent intent = new Intent(getContext(), BookCaptureActivity.class);
         scanLauncher.launch(intent);
     }
 
     @Override
-    public void insertBook(Book book) {
-        operator.insert(book, this);
+    public void insertBook(ProgressBook progressBook) {
+        operator.insert(progressBook, this);
     }
 
     @Override
-    public void updateBook(Book book) {
-        operator.update(book, this);
+    public void updateBook(ProgressBook progressBook) {
+        operator.update(progressBook, this);
     }
 
     @Override
     public void onSuccess(List<Book> data, int... position) {
-        this.data = data;
+        List<ProgressBook> list = new ArrayList<>();
+        for (Book b : data) {
+            list.add((ProgressBook) b);
+        }
+        this.data = list;
         adapter.setData(data);
         adapter.notifyDataSetChanged();
     }
@@ -192,7 +182,7 @@ public class ProgressFragment extends Fragment implements BookOperateListener, D
     }
 
     @Override
-    public void getRequestBook(RequestBook requestBook) {
+    public void getRequestBook(ProgressRequestBook requestBook) {
         assert getActivity() != null;
         getActivity().runOnUiThread(() -> DialogsHelper.showInfoDialog(
                 getContext(),requestBook,this

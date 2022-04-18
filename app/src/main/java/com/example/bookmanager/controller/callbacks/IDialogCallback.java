@@ -1,6 +1,6 @@
 package com.example.bookmanager.controller.callbacks;
 
-import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.domain.ProgressBook;
 
 /**
  * @Description 对话框监听回调接口
@@ -9,9 +9,9 @@ import com.example.bookmanager.domain.Book;
  * @Date 2022/4/16 16:11
  * @Version
  */
-public interface DialogCallback {
+public interface IDialogCallback {
     void scanBarcode();
-    void insertBook(Book book);
-    void updateBook(Book book);
+    void insertBook(ProgressBook progressBook);
+    void updateBook(ProgressBook progressBook);
 
 }

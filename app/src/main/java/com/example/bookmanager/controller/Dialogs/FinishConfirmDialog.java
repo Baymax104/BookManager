@@ -1,4 +1,4 @@
-package com.example.bookmanager.controller;
+package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
 

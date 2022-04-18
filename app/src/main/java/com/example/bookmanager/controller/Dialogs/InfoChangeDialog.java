@@ -1,4 +1,4 @@
-package com.example.bookmanager.controller;
+package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
 import android.widget.EditText;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
-import com.example.bookmanager.domain.RequestBook;
+import com.example.bookmanager.domain.ProgressRequestBook;
 import com.lxj.xpopup.core.BottomPopupView;
 
 /**
@@ -21,14 +21,14 @@ import com.lxj.xpopup.core.BottomPopupView;
  * @Version
  */
 public class InfoChangeDialog extends BottomPopupView {
-    private RequestBook requestBook;
+    private ProgressRequestBook requestBook;
     private InfoChangeCallback callback;
 
     public InfoChangeDialog(@NonNull Context context) {
         super(context);
     }
 
-    public InfoChangeDialog(@NonNull Context context, RequestBook requestBook, InfoChangeCallback callback) {
+    public InfoChangeDialog(@NonNull Context context, ProgressRequestBook requestBook, InfoChangeCallback callback) {
         super(context);
         this.requestBook = requestBook;
         this.callback = callback;
@@ -36,7 +36,7 @@ public class InfoChangeDialog extends BottomPopupView {
 
     @Override
     protected int getImplLayoutId() {
-        return R.layout.info_change_dialog;
+        return R.layout.dialog_info_change;
     }
 
     @Override

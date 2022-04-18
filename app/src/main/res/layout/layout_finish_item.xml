@@ -7,15 +7,12 @@
         app:cardCornerRadius="10dp"
         android:layout_margin="7dp"
         app:cardElevation="5dp">
-    
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="6dp">
+            android:layout_margin="10dp">
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,25 +30,13 @@
                         android:textSize="20sp"
                         android:textColor="@color/black"
                         android:layout_gravity="start"/>
-                <RelativeLayout
+
+                <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/book_author"
-                            android:textColor="@color/book_card"
-                            android:layout_alignParentStart="true"
-                            android:maxEms="10"/>
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/add_time"
-                            android:layout_alignParentEnd="true"
-                            android:textColor="@color/book_card"/>
-                </RelativeLayout>
+                        android:id="@+id/book_author"
+                        android:textColor="@color/book_card"
+                        android:maxEms="10" />
             </LinearLayout>
             <ImageView
                     android:layout_width="wrap_content"
@@ -68,30 +53,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="18dp"
                 android:orientation="horizontal">
-            <ProgressBar
-                    android:layout_width="0dp"
-                    android:layout_height="6dp"
-                    android:layout_weight="9"
-                    android:id="@+id/read_progress"
-                    android:layout_gravity="start|center_vertical"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:max="100"
-                    android:progressDrawable="@drawable/layer_list_progress_bar"/>
             <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_gravity="end"
-                    android:layout_marginStart="7dp"
-                    android:gravity="center"
-                    android:textSize="13sp"
+                    android:id="@+id/book_page"
                     android:textColor="@color/book_card"
-                    android:id="@+id/num_progress"/>
-
+                    android:gravity="start"/>
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/book_time"
+                    android:textColor="@color/book_card"
+                    android:gravity="start"/>
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 </com.google.android.material.card.MaterialCardView>

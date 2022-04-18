@@ -20,21 +20,27 @@ import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.BookTouchCallback;
 import com.example.bookmanager.controller.callbacks.IMoveSwipeCallback;
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookOperator;
-import com.example.bookmanager.model.BookOperateListener;
+import com.example.bookmanager.model.BookType;
+import com.example.bookmanager.model.FinishOperator;
+import com.example.bookmanager.model.OperatorListener;
+import com.example.bookmanager.model.ProgressOperator;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCallback, BookOperateListener {
+
+public class EditActivity extends AppCompatActivity implements IMoveSwipeCallback, OperatorListener {
 
     private RecyclerView bookList;
-    private List<Book> data = new ArrayList<>();
-    private BookAdapter adapter = new BookAdapter(this, data, true);
-    private BookOperator operator = new BookOperator(this);
+    private List<Book> data;
+    private BookAdapter adapter;
+    private BookOperator operator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,6 @@ public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCal
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(bookList);
     }
-
     private void initView() {
         bookList = findViewById(R.id.book_list);
         Toolbar toolbar = findViewById(R.id.tool_bar);
@@ -63,10 +68,25 @@ public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCal
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
+        // 获取数据，同时根据类型初始化operator和adapter
         Intent intent = getIntent();
         Book[] passData = (Book[]) intent.getSerializableExtra("BookData");
         data = Arrays.asList(passData);
+        BookType type = (BookType) intent.getSerializableExtra("Type");
+        switch (type) {
+            case ProgressBook:
+                operator = new ProgressOperator(this);
+                adapter = new ProgressAdapter(this,data,true);
+                break;
+            case FinishBook:
+                operator = new FinishOperator(this);
+                adapter = new FinishAdapter(this,data,true);
+                break;
+            default:
+                break;
+        }
         adapter.setData(data);
+
         Toast.makeText(this, "滑动删除，拖动排序哦~", Toast.LENGTH_SHORT).show();
         // 修改状态栏为亮色主题
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -74,24 +94,24 @@ public class BookEditActivity extends AppCompatActivity implements IMoveSwipeCal
 
     @Override
     public void onMove(int fromPosition, int toPosition) {
-        Book fromBook = data.get(fromPosition);
-        Book toBook = data.get(toPosition);
-        operator.swap(fromBook, toBook, fromPosition, toPosition, this);
+        Book fromProgressBook = data.get(fromPosition);
+        Book toProgressBook = data.get(toPosition);
+        operator.swap(fromProgressBook, toProgressBook, fromPosition, toPosition, this);
     }
 
     @Override
     public void onSwiped(int position) {
-        Book deletedBook = data.get(position);
+        Book deletedProgressBook = data.get(position);
         Snackbar snackbar = Snackbar.make(bookList, "已删除", Snackbar.LENGTH_LONG)
                 .setBackgroundTint(Color.parseColor("#1e90ff"))
                 .setTextColor(Color.WHITE)
                 .setAction("撤销", view -> {
-                    data.add(position, deletedBook);
+                    data.add(position,  deletedProgressBook);
                     adapter.notifyItemInserted(position);
                 });
         snackbar.show();
         // TODO 撤销恢复后重复删除
-        operator.delete(deletedBook, position, this);
+        operator.delete(deletedProgressBook, position, this);
     }
 
     @Override

@@ -30,4 +30,6 @@
     <string name="info_description">简介：%1$s</string>
     <string name="progress">进度</string>
     <string name="finish">读过</string>
+    <string name="progress_display">%1$d/%2$d</string>
+    <string name="book_time">%1$s——%2$s</string>
 </resources>

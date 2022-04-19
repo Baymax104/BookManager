@@ -63,6 +63,11 @@ public class FinishFragment extends Fragment implements OperatorListener, IDialo
                     data = list;
                     adapter.setData(data);
                     adapter.notifyDataSetChanged();
+                    if (data.size() == 0) {
+                        noDataTip.setVisibility(View.VISIBLE);
+                    } else {
+                        noDataTip.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
 

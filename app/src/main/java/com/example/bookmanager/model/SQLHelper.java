@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
  * @Version
  */
 public class SQLHelper extends SQLiteOpenHelper {
-    private String createBook = "create table Book(" +
+    private final String createBook = "create table Book(" +
             "id integer primary key autoincrement," +
             "name text not null," +
             "author text not null," +
@@ -22,14 +22,17 @@ public class SQLHelper extends SQLiteOpenHelper {
             "progress integer not null," +
             "page integer default 0)";
 
-    private String createFinishBook = "create table FinishBook(" +
+    private final String createFinishBook = "create table FinishBook(" +
             "id integer primary key autoincrement," +
             "name text not null," +
             "author text not null," +
             "page integer default 0," +
             "addTime text not null," +
             "endTime text not null)";
-    private String renameProgressBook = "alter table Book rename to ProgressBook";
+
+    private final String renameProgressBook = "alter table Book rename to ProgressBook";
+
+    private final String addHistoryColumn = "alter table ProgressBook add column history text";
     public SQLHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -38,15 +41,19 @@ public class SQLHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(createBook);
         sqLiteDatabase.execSQL(createFinishBook);
+        sqLiteDatabase.execSQL(renameProgressBook);
+        sqLiteDatabase.execSQL(addHistoryColumn);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // 若旧版本为1，则添加表
         switch (i) {
             case 1:
                 sqLiteDatabase.execSQL(createFinishBook);
+            case 2:
                 sqLiteDatabase.execSQL(renameProgressBook);
+            case 3:
+                sqLiteDatabase.execSQL(addHistoryColumn);
                 break;
         }
     }

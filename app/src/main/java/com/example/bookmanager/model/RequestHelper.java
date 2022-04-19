@@ -47,7 +47,6 @@ public class RequestHelper {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                callback.dismissDialog();
                 callback.getRequestError(e);
             }
 
@@ -58,11 +57,9 @@ public class RequestHelper {
                     if (body != null) {
                         String result = body.string();
                         ProgressRequestBook requestBook = parse(result);
-                        callback.dismissDialog();
                         callback.getRequestBook(requestBook);
                     }
                 } catch (IOException | JSONException e) {
-                    callback.dismissDialog();
                     callback.getRequestError(e);
                 }
             }

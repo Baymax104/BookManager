@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmanager.R;
@@ -37,6 +38,7 @@ import java.util.Stack;
 public class EditActivity extends AppCompatActivity implements IMoveSwipeCallback, OperatorListener {
 
     private RecyclerView bookList;
+    private TextView noDataTip;
     private List<Book> data;
     private BookAdapter adapter;
     private BookOperator operator;
@@ -67,6 +69,7 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
     }
     private void initView() {
         bookList = findViewById(R.id.book_list);
+        noDataTip = findViewById(R.id.no_data_tip);
         Toolbar toolbar = findViewById(R.id.tool_bar);
 
         setSupportActionBar(toolbar);
@@ -96,6 +99,11 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
                 break;
         }
         adapter.setData(data);
+        if (data.size() == 0) {
+            noDataTip.setVisibility(View.VISIBLE);
+        } else {
+            noDataTip.setVisibility(View.INVISIBLE);
+        }
 
         Toast.makeText(this, "滑动删除，拖动排序哦~", Toast.LENGTH_SHORT).show();
         // 修改状态栏为亮色主题
@@ -166,6 +174,11 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
             int fromPosition = position[0];
             int toPosition = position[1];
             adapter.notifyItemMoved(fromPosition, toPosition);
+        }
+        if (data.size() == 0) {
+            noDataTip.setVisibility(View.VISIBLE);
+        } else {
+            noDataTip.setVisibility(View.INVISIBLE);
         }
     }
 

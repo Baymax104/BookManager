@@ -28,7 +28,7 @@ public class ProgressOperator implements BookOperator {
 
     public ProgressOperator(Context context) {
         this.context = context;
-        helper = new SQLHelper(context, "BookManager.db", null, 2);
+        helper = new SQLHelper(context, "BookManager.db", null, version);
     }
 
     @Override

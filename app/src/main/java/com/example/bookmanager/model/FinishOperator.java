@@ -29,7 +29,7 @@ public class FinishOperator implements BookOperator {
 
     public FinishOperator(Context context) {
         this.context = context;
-        helper = new SQLHelper(context,"BookManager.db",null,2);
+        helper = new SQLHelper(context,"BookManager.db",null,version);
     }
 
     @Override

@@ -84,6 +84,11 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
                     data = list;
                     adapter.setData(data);
                     adapter.notifyDataSetChanged();
+                    if (data.size() == 0) {
+                        noDataTip.setVisibility(View.VISIBLE);
+                    } else {
+                        noDataTip.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
 
@@ -228,13 +233,16 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     @Override
     public void getRequestBook(ProgressRequestBook requestBook) {
         assert getActivity() != null;
-        getActivity().runOnUiThread(() -> DialogsHelper.showInfoDialog(
+        getActivity().runOnUiThread(() ->
+                loadingView.dismissWith(() -> DialogsHelper.showInfoDialog(
                 getContext(),requestBook,this
-        ));
+        )));
     }
 
     @Override
     public void getRequestError(Exception e) {
+        assert getActivity() != null;
+        getActivity().runOnUiThread(() -> loadingView.smartDismiss());
         Looper.prepare();
         if (e instanceof IOException) {
             if (Objects.equals(e.getMessage(), "无数据")) {
@@ -256,11 +264,5 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
             e.printStackTrace();
         }
         Looper.loop();
-    }
-
-    @Override
-    public void dismissDialog() {
-        assert getActivity() != null;
-        getActivity().runOnUiThread(() -> loadingView.dismiss());
     }
 }

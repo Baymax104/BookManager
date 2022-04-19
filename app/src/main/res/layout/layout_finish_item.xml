@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="85dp"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         app:cardCornerRadius="10dp"
         android:layout_margin="7dp"
         app:cardElevation="5dp">
+    <FrameLayout
+            android:layout_width="5dp"
+            android:layout_height="match_parent">
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="73dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/shape_finish_item"/>
+    </FrameLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_gravity="center"
             android:layout_margin="10dp">
         <LinearLayout
                 android:layout_width="match_parent"
@@ -22,21 +32,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="start"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/book_name"
                         android:textSize="20sp"
                         android:textColor="@color/black"
-                        android:layout_gravity="start"/>
+                        android:layout_gravity="start"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
 
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/book_author"
                         android:textColor="@color/book_card"
-                        android:maxEms="10" />
+                        android:maxLines="1"
+                        android:maxEms="10"
+                        android:ellipsize="end"/>
             </LinearLayout>
             <ImageView
                     android:layout_width="wrap_content"
@@ -52,7 +67,8 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="18dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginStart="5dp">
             <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

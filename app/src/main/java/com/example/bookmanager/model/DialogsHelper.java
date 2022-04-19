@@ -2,8 +2,11 @@ package com.example.bookmanager.model;
 
 import android.content.Context;
 
+import com.example.bookmanager.controller.Dialogs.FinishConfirmDialog;
 import com.example.bookmanager.controller.Dialogs.InfoChangeDialog;
+import com.example.bookmanager.controller.Dialogs.RestartConfirmDialog;
 import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
+import com.example.bookmanager.domain.FinishBook;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.domain.ProgressRequestBook;
 import com.example.bookmanager.controller.Dialogs.AddDialog;
@@ -57,6 +60,20 @@ public class DialogsHelper {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true)
                 .asCustom(new InfoChangeDialog(context,requestBook,callback))
+                .show();
+    }
+
+    public static void showFinishConfirmDialog(Context context, ProgressBook book, int position, IDialogCallback callback) {
+        new XPopup.Builder(context)
+                .isDestroyOnDismiss(true)
+                .asCustom(new FinishConfirmDialog(context,book,position,callback))
+                .show();
+    }
+
+    public static void showRestartConfirmDialog(Context context, List<FinishBook> data, int position, IDialogCallback callback) {
+        new XPopup.Builder(context)
+                .isDestroyOnDismiss(true)
+                .asCustom(new RestartConfirmDialog(context, data, position, callback))
                 .show();
     }
 }

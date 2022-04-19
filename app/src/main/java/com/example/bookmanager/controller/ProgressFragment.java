@@ -26,10 +26,12 @@ import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.controller.callbacks.IRequestCallback;
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.domain.FinishBook;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.domain.ProgressRequestBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookType;
+import com.example.bookmanager.model.FinishOperator;
 import com.example.bookmanager.model.OperatorListener;
 import com.example.bookmanager.model.ProgressOperator;
 import com.example.bookmanager.model.DialogsHelper;
@@ -40,9 +42,11 @@ import com.king.zxing.CameraScan;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Description
@@ -105,6 +109,12 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         bookList.setLayoutManager(layoutManager);
         bookList.setAdapter(adapter);
 
+        // 监听重新开始结果
+        getParentFragmentManager().setFragmentResultListener("Restart",this,(requestKey, result) -> {
+            ProgressBook book = (ProgressBook) result.getSerializable("Book");
+            operator.insert(book, this);
+        });
+
         // 查询数据库获取数据
         operator.query(this);
 
@@ -145,13 +155,29 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     }
 
     @Override
-    public void insertBook(ProgressBook progressBook) {
+    public void insertBook(Book progressBook) {
         operator.insert(progressBook, this);
     }
 
     @Override
-    public void updateBook(ProgressBook progressBook) {
+    public void updateBook(Book progressBook) {
         operator.update(progressBook, this);
+    }
+
+    @Override
+    public void deleteBook(Book book1, int position, boolean... isRestart) {
+        ProgressBook book = (ProgressBook) book1;
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String endTime = format.format(date);
+        FinishBook finishBook = new FinishBook(
+                book.getName(),book.getAuthor(),
+                book.getPage(),book.getAddTime(),endTime
+        );
+        Bundle finish = new Bundle();
+        finish.putSerializable("Book", finishBook);
+        getParentFragmentManager().setFragmentResult("Finish", finish);
+        operator.delete(book,position,this);
     }
 
     @Override

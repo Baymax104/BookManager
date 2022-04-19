@@ -11,43 +11,19 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/input_book_progress"
+                android:text="@string/restart_book"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"/>
-        <LinearLayout
+        <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="今天读到第"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:layout_gravity="center_vertical"/>
-            <EditText
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="48dp"
-                    android:id="@+id/input_book_progress"
-                    android:inputType="numberDecimal"
-                    android:hint="几"
-                    android:autofillHints="name"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="页啦"
-                    android:textSize="17sp"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_vertical"/>
-        </LinearLayout>
-
+                android:text="@string/restart_book_confrim"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black"
+                android:textSize="22sp"/>
         <View
                 android:layout_width="match_parent"
                 android:layout_height="0.1dp"
@@ -61,24 +37,28 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/cancel"
-                    android:id="@+id/update_cancel"
                     android:gravity="center"
+                    android:id="@+id/restart_cancel"
+                    android:text="@string/cancel"
                     android:textColor="@color/black"
-                    android:background="@drawable/selector_dialog_button"/>
+                    android:background="@drawable/selector_dialog_button" />
             <View
                     android:layout_width="0.1dp"
                     android:layout_height="match_parent"
-                    android:background="#d6d6d6"/>
+                    android:id="@+id/separator"
+                    android:background="#d6d6d6" />
             <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/confirm"
+                    android:id="@+id/restart_confirm"
                     android:gravity="center"
-                    android:id="@+id/update_confirm"
+                    android:text="@string/confirm"
                     android:textColor="@color/black"
                     android:background="@drawable/selector_dialog_button"/>
+
         </LinearLayout>
     </LinearLayout>
+
+
 </com.google.android.material.card.MaterialCardView>

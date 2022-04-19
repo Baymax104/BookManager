@@ -8,8 +8,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.ProgressFragment;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
+import com.example.bookmanager.model.DialogsHelper;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import java.util.List;
@@ -54,12 +56,12 @@ public class UpdateDialog extends CenterPopupView {
             EditText inputProgress = findViewById(R.id.input_book_progress);
             if (inputProgress != null && !inputProgress.getText().toString().equals("")) {
                 int progress = Integer.parseInt(inputProgress.getText().toString());
-                ProgressBook progressBook = data.get(position);
-                if (progress <= progressBook.getPage()) {
-                    progressBook.setProgress(progress);
-                    callback.updateBook(progressBook);
-                    if (progressBook.getProgress() == progressBook.getPage()) {
-                        // TODO 弹出是否完成对话框
+                ProgressBook book = data.get(position);
+                if (progress <= book.getPage()) {
+                    book.setProgress(progress);
+                    callback.updateBook(book);
+                    if (book.getProgress() == book.getPage()) {
+                        dismissWith(() -> DialogsHelper.showFinishConfirmDialog(context,book,position,callback));
                     } else {
                         dismiss();
                     }

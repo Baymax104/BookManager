@@ -58,6 +58,7 @@ public class FinishAdapter extends BookAdapter {
         viewHolder.name.setText(book.getName());
         viewHolder.author.setText(book.getAuthor());
         viewHolder.time.setText(String.format(resources.getString(R.string.book_time),book.getAddTime(),book.getEndTime()));
+        viewHolder.page.setText(String.format(resources.getString(R.string.info_page),book.getPage()));
         if (isEdit) {
             viewHolder.sortImg.setVisibility(View.VISIBLE);
         }
@@ -76,12 +77,14 @@ public class FinishAdapter extends BookAdapter {
         private TextView author;
         private ImageView sortImg;
         private TextView time;
+        private TextView page;
         public FinishViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.book_name);
             author = itemView.findViewById(R.id.book_author);
             sortImg = itemView.findViewById(R.id.sort_img);
             time = itemView.findViewById(R.id.book_time);
+            page = itemView.findViewById(R.id.book_page);
         }
     }
 }

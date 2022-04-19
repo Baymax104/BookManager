@@ -14,6 +14,7 @@
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_book_edit.xml" value="0.1956521739130435" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_book_info.xml" value="0.2105978260869565" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_finished_book.xml" value="0.2105978260869565" />
+        <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_history.xml" value="0.20380434782608695" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_scan_code.xml" value="0.2105978260869565" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_start.xml" value="0.22" />
@@ -34,8 +35,9 @@
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/fragment_plan.xml" value="0.20380434782608695" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/fragment_progress.xml" value="0.2105978260869565" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/info_change_dialog.xml" value="0.2105978260869565" />
-        <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/layout_finish_item.xml" value="0.6666666666666666" />
+        <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/layout_finish_item.xml" value="0.22" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/layout_main_content.xml" value="0.3333333333333333" />
+        <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/layout_plan_item.xml" value="0.20380434782608695" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/layout_progress_item.xml" value="0.25" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/main_layout.xml" value="0.1956521739130435" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/manual_add_dialog.xml" value="0.2105978260869565" />

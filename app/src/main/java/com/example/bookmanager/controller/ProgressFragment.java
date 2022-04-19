@@ -169,8 +169,12 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     }
 
     @Override
-    public void insertBook(Book progressBook) {
-        operator.insert(progressBook, this);
+    public void insertBook(Book book1) {
+        ProgressBook book = (ProgressBook) book1;
+        int size = data.size() + 1;
+        String history = "h" + size;
+        book.setHistory(history);
+        operator.insert(book, this);
     }
 
     @Override
@@ -185,8 +189,8 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String endTime = format.format(date);
         FinishBook finishBook = new FinishBook(
-                book.getName(),book.getAuthor(),
-                book.getPage(),book.getAddTime(),endTime
+                book.getName(),book.getAuthor(),book.getPage(),
+                book.getAddTime(),endTime,book.getHistory()
         );
         Bundle finish = new Bundle();
         finish.putSerializable("Book", finishBook);
@@ -214,7 +218,11 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     public void onError(BookException e) {
         switch (e.errorType) {
             case INSERT_ERROR:
-                Toast.makeText(getContext(), "添加:"+ e, Toast.LENGTH_SHORT).show();
+                if (Objects.equals(e.getMessage(), "记录已存在")) {
+                    Toast.makeText(getContext(), "存在相同记录", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "添加:"+ e, Toast.LENGTH_SHORT).show();
+                }
                 Log.e("MainActivity",e.toString());
                 break;
             case UPDATE_ERROR:

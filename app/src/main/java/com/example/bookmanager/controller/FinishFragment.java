@@ -167,7 +167,7 @@ public class FinishFragment extends Fragment implements OperatorListener, IDialo
             FinishBook book = (FinishBook) book1;
             ProgressBook progressBook = new ProgressBook(
                     book.getName(),book.getAuthor(),book.getAddTime(),
-                    0,book.getPage()
+                    0,book.getPage(),book.getHistory()
             );
             Bundle restart = new Bundle();
             restart.putSerializable("Book",progressBook);

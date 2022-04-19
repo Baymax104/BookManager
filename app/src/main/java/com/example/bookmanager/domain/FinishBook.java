@@ -16,12 +16,13 @@ public class FinishBook extends Book {
     public FinishBook() {
     }
 
-    public FinishBook(String name, String author, int page, String addTime, String endTime) {
+    public FinishBook(String name, String author, int page, String addTime, String endTime, String history) {
         this.name = name;
         this.author = author;
         this.page = page;
         this.addTime = addTime;
         this.endTime = endTime;
+        this.history = history;
     }
 
     public String getAuthor() {
@@ -62,5 +63,13 @@ public class FinishBook extends Book {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getHistory() {
+        return history;
+    }
+
+    public void setHistory(String history) {
+        this.history = history;
     }
 }

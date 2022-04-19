@@ -67,6 +67,7 @@ public class FinishOperator implements BookOperator {
                 values.put("page", book.getPage());
                 values.put("addTime", book.getAddTime());
                 values.put("endTime", book.getEndTime());
+                values.put("history", book.getHistory());
                 long insertId = db.insert(tableName,null,values);
                 if (insertId == -1) {
                     throw new BookException("添加失败", BookException.ErrorType.INSERT_ERROR);
@@ -101,37 +102,6 @@ public class FinishOperator implements BookOperator {
 
     @Override
     public void update(Book book1, OperatorListener listener) {
-        // TODO FinishBook是否需要update
-        SQLiteDatabase db = helper.getWritableDatabase();
-        FinishBook book = (FinishBook) book1;
-        List<Book> data;
-        String queryExistsSQL = "select * from ProgressBook where name=? and author=?";
-        db.beginTransaction();
-        try (Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(),book.getAuthor()})) {
-
-            if (cursor == null || cursor.getCount() == 0) {
-                throw new BookException("数据不存在", BookException.ErrorType.UPDATE_ERROR);
-            }
-            ContentValues values = new ContentValues();
-//            values.put("progress", book.getProgress());
-            int row = db.update(tableName, values, "name=? and author=?", new String[]{
-                    book.getName(), book.getAuthor()
-            });
-            if (row == 0) {
-                throw new BookException("更新失败", BookException.ErrorType.UPDATE_ERROR);
-            }
-            data = getDataAfterOperate();
-            if (data == null) {
-                throw new BookException("返回数据失败", BookException.ErrorType.UPDATE_ERROR);
-            }
-            listener.onSuccess(data);
-            db.setTransactionSuccessful();
-        } catch (BookException e) {
-            listener.onError(e);
-        } finally {
-            db.endTransaction();
-        }
-
     }
 
     @Override
@@ -147,6 +117,7 @@ public class FinishOperator implements BookOperator {
             if (row == 0) {
                 throw new BookException("删除失败", BookException.ErrorType.DELETE_ERROR);
             }
+            deleteItemTable(book);
             data = getDataAfterOperate();
             if (data == null) {
                 throw new BookException("返回数据失败", BookException.ErrorType.DELETE_ERROR);
@@ -188,6 +159,7 @@ public class FinishOperator implements BookOperator {
             values.put("page", fromBook.getPage());
             values.put("addTime", fromBook.getAddTime());
             values.put("endTime", fromBook.getEndTime());
+            values.put("history", fromBook.getHistory());
             int row = db.update(tableName,values,"id=?",new String[]{toId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -199,6 +171,7 @@ public class FinishOperator implements BookOperator {
             values.put("page", toBook.getPage());
             values.put("addTime", toBook.getAddTime());
             values.put("endTime", toBook.getEndTime());
+            values.put("history", toBook.getHistory());
             row = db.update(tableName,values, "id=?",new String[]{fromId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -230,11 +203,20 @@ public class FinishOperator implements BookOperator {
                 int page = cursor.getInt(3);
                 String addTime = cursor.getString(4);
                 String endTime = cursor.getString(5);
-                data.add(new FinishBook(name,author,page,addTime,endTime));
+                String history = cursor.getString(6);
+                data.add(new FinishBook(name,author,page,addTime,endTime,history));
             }
             cursor.close();
             return new ArrayList<>(data);
         }
         return null;
+    }
+
+    @Override
+    public void deleteItemTable(Book book1) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        FinishBook book = (FinishBook) book1;
+        final String deleteSQL = "drop table if exists "+book.getHistory();
+        db.execSQL(deleteSQL);
     }
 }

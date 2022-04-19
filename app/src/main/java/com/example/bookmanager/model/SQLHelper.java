@@ -32,7 +32,8 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     private final String renameProgressBook = "alter table Book rename to ProgressBook";
 
-    private final String addHistoryColumn = "alter table ProgressBook add column history text";
+    private final String addHistoryInProgress = "alter table ProgressBook add column history text";
+    private final String addHistoryInFinish = "alter table FinishBook add column history text";
     public SQLHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -42,7 +43,8 @@ public class SQLHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(createBook);
         sqLiteDatabase.execSQL(createFinishBook);
         sqLiteDatabase.execSQL(renameProgressBook);
-        sqLiteDatabase.execSQL(addHistoryColumn);
+        sqLiteDatabase.execSQL(addHistoryInProgress);
+        sqLiteDatabase.execSQL(addHistoryInFinish);
     }
 
     @Override
@@ -53,7 +55,8 @@ public class SQLHelper extends SQLiteOpenHelper {
             case 2:
                 sqLiteDatabase.execSQL(renameProgressBook);
             case 3:
-                sqLiteDatabase.execSQL(addHistoryColumn);
+                sqLiteDatabase.execSQL(addHistoryInProgress);
+                sqLiteDatabase.execSQL(addHistoryInFinish);
                 break;
         }
     }

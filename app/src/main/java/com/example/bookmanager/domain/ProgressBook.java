@@ -17,10 +17,19 @@ public class ProgressBook extends Book {
 
     public ProgressBook(String name, String author, String addTime, int progress, int page) {
         this.name = name;
+        this.author = author;
+        this.addTime = addTime;
+        this.progress = progress;
+        this.page = page;
+    }
+
+    public ProgressBook(String name, String author, String addTime, int progress, int page, String history) {
+        this.name = name;
         this.addTime = addTime;
         this.author = author;
         this.progress = progress;
         this.page = page;
+        this.history = history;
     }
 
     public String getAuthor() {
@@ -61,5 +70,13 @@ public class ProgressBook extends Book {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public String getHistory() {
+        return history;
+    }
+
+    public void setHistory(String history) {
+        this.history = history;
     }
 }

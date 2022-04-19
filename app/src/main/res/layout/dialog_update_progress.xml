@@ -29,7 +29,8 @@
                     android:text="今天读到第"
                     android:textColor="@color/black"
                     android:textSize="17sp"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"/>
             <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -45,7 +46,8 @@
                     android:text="页啦"
                     android:textSize="17sp"
                     android:textColor="@color/black"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="10dp"/>
         </LinearLayout>
 
         <View

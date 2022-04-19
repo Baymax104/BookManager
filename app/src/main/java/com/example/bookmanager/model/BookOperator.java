@@ -20,4 +20,5 @@ public interface BookOperator {
     void delete(Book book, int position, OperatorListener listener);
     void swap(Book fromBook, Book toBook, int fromPosition, int toPosition, OperatorListener listener);
     List<Book> getDataAfterOperate();
+    void deleteItemTable(Book book);
 }

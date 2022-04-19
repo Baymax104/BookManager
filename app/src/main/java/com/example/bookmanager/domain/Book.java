@@ -13,4 +13,5 @@ public abstract class Book implements Serializable {
     protected String name;
     protected String author;
     protected int page;
+    protected String history;
 }

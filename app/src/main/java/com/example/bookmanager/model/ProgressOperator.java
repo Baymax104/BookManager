@@ -8,8 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.ProgressBook;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Description
@@ -45,35 +48,25 @@ public class ProgressOperator implements BookOperator {
             if (cursor == null) {
                 throw new BookException("数据不存在", BookException.ErrorType.INSERT_ERROR);
             }
-            if (cursor.moveToFirst()) {
+            if (!cursor.moveToFirst()) {
                 ContentValues values = new ContentValues();
                 values.put("name", book.getName());
                 values.put("author", book.getAuthor());
                 values.put("addTime", book.getAddTime());
                 values.put("progress", book.getProgress());
                 values.put("page", book.getPage());
-                int row = db.update(tableName,values,"name=? and author=?",new String[]{
-                        book.getName(),
-                        book.getAuthor()
-                });
-                if (row == 0) {
-                    throw new BookException("更新失败", BookException.ErrorType.INSERT_ERROR);
-                }
-            } else {
-                ContentValues values = new ContentValues();
-                values.put("name", book.getName());
-                values.put("author", book.getAuthor());
-                values.put("addTime", book.getAddTime());
-                values.put("progress", book.getProgress());
-                values.put("page", book.getPage());
+                values.put("history", book.getHistory());
                 long insertId = db.insert(tableName,null,values);
                 if (insertId == -1) {
-                    throw new BookException("添加失败", BookException.ErrorType.INSERT_ERROR);
+                    throw new BookException("添加失败1", BookException.ErrorType.INSERT_ERROR);
                 }
+                createItemTable(book);
+            } else {
+                throw new BookException("记录已存在", BookException.ErrorType.INSERT_ERROR);
             }
             data = getDataAfterOperate();
             if (data == null) {
-                throw new BookException("返回数据失败", BookException.ErrorType.INSERT_ERROR);
+                throw new BookException("返回数据失败2", BookException.ErrorType.INSERT_ERROR);
             }
             listener.onSuccess(data);
             db.setTransactionSuccessful();
@@ -82,7 +75,6 @@ public class ProgressOperator implements BookOperator {
         } finally {
             db.endTransaction();
         }
-
     }
 
     @Override
@@ -144,6 +136,7 @@ public class ProgressOperator implements BookOperator {
             if (row == 0) {
                 throw new BookException("删除失败", BookException.ErrorType.DELETE_ERROR);
             }
+            deleteItemTable(book);
             data = getDataAfterOperate();
             if (data == null) {
                 throw new BookException("返回数据失败", BookException.ErrorType.DELETE_ERROR);
@@ -185,6 +178,7 @@ public class ProgressOperator implements BookOperator {
             values.put("addTime", fromBook.getAddTime());
             values.put("progress", fromBook.getProgress());
             values.put("page", fromBook.getPage());
+            values.put("history", fromBook.getHistory());
             int row = db.update(tableName,values,"id=?",new String[]{toId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -196,6 +190,7 @@ public class ProgressOperator implements BookOperator {
             values.put("addTime", toBook.getAddTime());
             values.put("progress", toBook.getProgress());
             values.put("page", toBook.getPage());
+            values.put("history", toBook.getHistory());
             row = db.update(tableName,values, "id=?",new String[]{fromId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -225,11 +220,41 @@ public class ProgressOperator implements BookOperator {
                 String addTime = cursor.getString(3);
                 int progress = cursor.getInt(4);
                 int page = cursor.getInt(5);
-                data.add(new ProgressBook(name, author, addTime, progress, page));
+                String history = cursor.getString(6);
+                data.add(new ProgressBook(name, author, addTime, progress, page, history));
             }
             cursor.close();
             return new ArrayList<>(data);
         }
         return null;
+    }
+
+    @Override
+    public void deleteItemTable(Book book1) {
+        ProgressBook book = (ProgressBook) book1;
+        SQLiteDatabase db = helper.getWritableDatabase();
+        final String deleteSQL = "drop table if exists "+book.getHistory();
+        db.execSQL(deleteSQL);
+    }
+
+    public void createItemTable(ProgressBook book) throws BookException {
+        final String createSQL = "create table if not exists "+book.getHistory()+"(" +
+                "id integer primary key autoincrement," +
+                "updateTime text not null," +
+                "startPage integer not null," +
+                "endPage integer not null)";
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL(createSQL);
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String updateTime = format.format(date);
+        ContentValues values = new ContentValues();
+        values.put("updateTime", updateTime);
+        values.put("startPage", 1);
+        values.put("endPage", 1);
+        long insertId = db.insert(book.getHistory(),null,values);
+        if (insertId == -1) {
+            throw new BookException("添加失败2", BookException.ErrorType.INSERT_ERROR);
+        }
     }
 }

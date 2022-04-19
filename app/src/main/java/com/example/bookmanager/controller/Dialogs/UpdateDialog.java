@@ -8,7 +8,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.bookmanager.R;
-import com.example.bookmanager.controller.ProgressFragment;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.model.DialogsHelper;
@@ -52,24 +51,26 @@ public class UpdateDialog extends CenterPopupView {
         super.onCreate();
         TextView confirm = findViewById(R.id.update_confirm);
         TextView cancel = findViewById(R.id.update_cancel);
+        ProgressBook book = data.get(position);
         confirm.setOnClickListener(view1 -> {
             EditText inputProgress = findViewById(R.id.input_book_progress);
-            if (inputProgress != null && !inputProgress.getText().toString().equals("")) {
-                int progress = Integer.parseInt(inputProgress.getText().toString());
-                ProgressBook book = data.get(position);
-                if (progress <= book.getPage()) {
-                    book.setProgress(progress);
-                    callback.updateBook(book);
-                    if (book.getProgress() == book.getPage()) {
-                        dismissWith(() -> DialogsHelper.showFinishConfirmDialog(context,book,position,callback));
+            if (inputProgress != null) {
+                if (!inputProgress.getText().toString().equals("")) {
+                    int progress = Integer.parseInt(inputProgress.getText().toString());
+                    if (progress <= book.getPage()) {
+                        book.setProgress(progress);
+                        callback.updateBook(book);
+                        if (book.getProgress() == book.getPage()) {
+                            dismissWith(() -> DialogsHelper.showFinishConfirmDialog(context,book,position,callback));
+                        } else {
+                            dismiss();
+                        }
                     } else {
-                        dismiss();
+                        Toast.makeText(context, "超过了最大页数", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(context, "超过了最大页数", Toast.LENGTH_SHORT).show();
+                    dismiss();
                 }
-            } else {
-                Toast.makeText(context, "输入不能为空", Toast.LENGTH_SHORT).show();
             }
         });
         cancel.setOnClickListener(view1 -> dismiss());

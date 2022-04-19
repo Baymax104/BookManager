@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -46,6 +47,7 @@ public class FinishFragment extends Fragment implements OperatorListener, IDialo
     private List<FinishBook> data = new ArrayList<>();
     private DrawerLayout drawerLayout;
     private RecyclerView bookList;
+    private TextView noDataTip;
     private FinishOperator operator;
     private FinishAdapter adapter;
 
@@ -99,6 +101,7 @@ public class FinishFragment extends Fragment implements OperatorListener, IDialo
     private void initView() {
         drawerLayout = requireActivity().findViewById(R.id.drawer_layout);
         bookList = view.findViewById(R.id.book_list);
+        noDataTip = view.findViewById(R.id.no_data_tip);
     }
 
     @Override
@@ -125,6 +128,11 @@ public class FinishFragment extends Fragment implements OperatorListener, IDialo
         this.data = list;
         adapter.setData(data);
         adapter.notifyDataSetChanged();
+        if (data.size() == 0) {
+            noDataTip.setVisibility(View.VISIBLE);
+        } else {
+            noDataTip.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

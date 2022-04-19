@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -60,6 +61,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     private DrawerLayout drawerLayout;
     private FloatingActionButton floatingAdd;
     private RecyclerView bookList;
+    private TextView noDataTip;
     private List<ProgressBook> data = new ArrayList<>();
     private ProgressAdapter adapter;
     private ProgressOperator operator;
@@ -131,6 +133,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         drawerLayout = requireActivity().findViewById(R.id.drawer_layout);
         floatingAdd = view.findViewById(R.id.floating_add);
         bookList = view.findViewById(R.id.book_list);
+        noDataTip = view.findViewById(R.id.no_data_tip);
     }
 
     @Override
@@ -189,6 +192,11 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         this.data = list;
         adapter.setData(data);
         adapter.notifyDataSetChanged();
+        if (data.size() == 0) {
+            noDataTip.setVisibility(View.VISIBLE);
+        } else {
+            noDataTip.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

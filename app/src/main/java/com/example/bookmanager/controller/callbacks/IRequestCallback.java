@@ -12,4 +12,5 @@ import com.example.bookmanager.domain.ProgressRequestBook;
 public interface IRequestCallback {
     void getRequestBook(ProgressRequestBook requestBook);
     void getRequestError(Exception e);
+    void dismissDialog();
 }

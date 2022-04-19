@@ -39,15 +39,19 @@ import com.example.bookmanager.model.DialogsHelper;
 import com.example.bookmanager.model.RequestHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.king.zxing.CameraScan;
+import com.lxj.xpopup.impl.LoadingPopupView;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @Description
@@ -62,6 +66,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     private FloatingActionButton floatingAdd;
     private RecyclerView bookList;
     private TextView noDataTip;
+    private LoadingPopupView loadingView;
     private List<ProgressBook> data = new ArrayList<>();
     private ProgressAdapter adapter;
     private ProgressOperator operator;
@@ -87,6 +92,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     String isbnCode = CameraScan.parseScanResult(result.getData());
+                    loadingView = DialogsHelper.showLoadingDialog(getContext());
                     RequestHelper.sendRequest(isbnCode, this);
                 }
             });
@@ -231,7 +237,15 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     public void getRequestError(Exception e) {
         Looper.prepare();
         if (e instanceof IOException) {
-            Toast.makeText(getContext(), "连接失败:" + e, Toast.LENGTH_SHORT).show();
+            if (Objects.equals(e.getMessage(), "无数据")) {
+                Toast.makeText(getContext(), "无搜索结果，试试手动录入~", Toast.LENGTH_SHORT).show();
+            } else {
+                if (e instanceof SocketTimeoutException) {
+                    Toast.makeText(getContext(), "连接超时："+ e, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "连接失败:" + e, Toast.LENGTH_SHORT).show();
+                }
+            }
             Log.e("MainActivity", e.toString());
         } else if (e instanceof JSONException) {
             Toast.makeText(getContext(), "解析失败:" + e, Toast.LENGTH_SHORT).show();
@@ -242,5 +256,11 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
             e.printStackTrace();
         }
         Looper.loop();
+    }
+
+    @Override
+    public void dismissDialog() {
+        assert getActivity() != null;
+        getActivity().runOnUiThread(() -> loadingView.dismiss());
     }
 }

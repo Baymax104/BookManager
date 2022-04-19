@@ -38,6 +38,7 @@
             android:id="@+id/nav_tab"
             app:menu="@menu/bottom_nav_menu"
             android:theme="@style/NavigationViewButton"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            android:background="@color/bar_color"/>
 
 </RelativeLayout>

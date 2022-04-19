@@ -15,6 +15,8 @@ import com.example.bookmanager.controller.Dialogs.InfoDisplayDialog;
 import com.example.bookmanager.controller.Dialogs.ManualAddDialog;
 import com.example.bookmanager.controller.Dialogs.UpdateDialog;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.impl.LoadingPopupView;
+import com.lxj.xpopup.widget.LoadingView;
 
 import java.util.List;
 
@@ -75,5 +77,13 @@ public class DialogsHelper {
                 .isDestroyOnDismiss(true)
                 .asCustom(new RestartConfirmDialog(context, data, position, callback))
                 .show();
+    }
+
+    public static LoadingPopupView showLoadingDialog(Context context) {
+        LoadingPopupView view = new XPopup.Builder(context)
+                .dismissOnTouchOutside(false)
+                .asLoading();
+        view.show();
+        return view;
     }
 }

@@ -57,7 +57,7 @@ public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCall
         TextView infoIsbn = findViewById(R.id.book_info_isbn);
         TextView infoDescription = findViewById(R.id.book_info_description);
 
-        Glide.with(context).load(requestBook.getPhotoUrl()).into(bookCover);
+        Glide.with(context).load(requestBook.getCoverUrl()).into(bookCover);
         Resources resources = getResources();
         infoPublishing.setText(String.format(resources.getString(R.string.info_publishing),requestBook.getPublishing()));
         infoIsbn.setText(String.format(resources.getString(R.string.info_isbn), requestBook.getIsbn()));

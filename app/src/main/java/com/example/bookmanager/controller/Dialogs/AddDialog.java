@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.example.bookmanager.R;
 import com.example.bookmanager.model.DialogsHelper;
@@ -37,7 +38,7 @@ public class AddDialog extends CenterPopupView {
 
         TextView manualAdd = findViewById(R.id.manual_add);
         TextView scanAdd = findViewById(R.id.scan_add);
-        manualAdd.setOnClickListener(v -> dismissWith(() -> DialogsHelper.showManualAddDialog(context, callback)));
+        manualAdd.setOnClickListener(v -> dismissWith(() -> DialogsHelper.showManualAddDialog(context,callback)));
         scanAdd.setOnClickListener(v -> dismissWith(() -> callback.scanBarcode()));
     }
 

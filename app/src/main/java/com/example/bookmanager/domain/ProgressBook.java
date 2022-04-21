@@ -1,6 +1,9 @@
 package com.example.bookmanager.domain;
 
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 /**
  * @Description
  * @Author Jake
@@ -16,20 +19,26 @@ public class ProgressBook extends Book {
     }
 
     public ProgressBook(String name, String author, String addTime, int progress, int page) {
-        this.name = name;
-        this.author = author;
+        super(name,author,page);
         this.addTime = addTime;
         this.progress = progress;
-        this.page = page;
+    }
+    public ProgressBook(String name, String author, String addTime, int progress, int page, String cover) {
+        super(name,author,page);
+        this.addTime = addTime;
+        this.progress = progress;
+        this.cover = cover;
+    }
+    public ProgressBook(String name, String author, String addTime, int progress, int page, String history, String cover, String coverUrl) {
+        super(name,author,page,history,cover,coverUrl);
+        this.addTime = addTime;
+        this.progress = progress;
     }
 
-    public ProgressBook(String name, String author, String addTime, int progress, int page, String history) {
-        this.name = name;
+    public ProgressBook(String name, String author, String addTime, int progress, int page, String history, String cover) {
+        super(name,author,page,history,cover);
         this.addTime = addTime;
-        this.author = author;
         this.progress = progress;
-        this.page = page;
-        this.history = history;
     }
 
     public String getAuthor() {
@@ -78,5 +87,21 @@ public class ProgressBook extends Book {
 
     public void setHistory(String history) {
         this.history = history;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }

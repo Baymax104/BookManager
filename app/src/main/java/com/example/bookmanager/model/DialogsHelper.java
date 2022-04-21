@@ -2,6 +2,8 @@ package com.example.bookmanager.model;
 
 import android.content.Context;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.bookmanager.controller.Dialogs.FinishConfirmDialog;
 import com.example.bookmanager.controller.Dialogs.InfoChangeDialog;
 import com.example.bookmanager.controller.Dialogs.RestartConfirmDialog;
@@ -39,7 +41,6 @@ public class DialogsHelper {
     public static void showManualAddDialog(Context context, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true)
-                .dismissOnTouchOutside(false)
                 .asCustom(new ManualAddDialog(context, callback))
                 .show();
     }
@@ -47,7 +48,6 @@ public class DialogsHelper {
     public static void showUpdateDialog(Context context, int position, List<ProgressBook> data, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .dismissOnTouchOutside(true)
-                .dismissOnTouchOutside(false)
                 .asCustom(new UpdateDialog(context,position,data,callback))
                 .show();
     }

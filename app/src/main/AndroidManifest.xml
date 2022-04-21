@@ -37,6 +37,15 @@
                 android:name=".controller.BookCaptureActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/CaptureTheme" />
+        <provider
+                android:authorities="com.example.bookmanager.fileprovider"
+                android:name="androidx.core.content.FileProvider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <!--meta_data指定共享路径-->
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_path"/>
+        </provider>
     </application>
 
 </manifest>

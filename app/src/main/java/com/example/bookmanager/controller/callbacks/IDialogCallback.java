@@ -1,5 +1,7 @@
 package com.example.bookmanager.controller.callbacks;
 
+import android.widget.ImageView;
+
 import com.example.bookmanager.domain.Book;
 
 /**
@@ -10,8 +12,14 @@ import com.example.bookmanager.domain.Book;
  * @Version
  */
 public interface IDialogCallback {
-    void scanBarcode();
-    void insertBook(Book book);
-    void updateBook(Book book);
-    void deleteBook(Book book, int position, boolean... isRestart);
+    default void scanBarcode() {
+    }
+    default void insertBook(Book book) {
+    }
+    default void updateBook(Book book) {
+    }
+    default void deleteBook(Book book, int position, boolean... isRestart) {
+    }
+    default void startCamera(ImageView takePhoto, ImageView takeCover, IUriCallback callback) {
+    }
 }

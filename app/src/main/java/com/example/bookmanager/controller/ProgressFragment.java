@@ -1,15 +1,24 @@
 package com.example.bookmanager.controller;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.INVISIBLE;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +26,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -26,13 +37,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.controller.callbacks.IRequestCallback;
+import com.example.bookmanager.controller.callbacks.IUriCallback;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.FinishBook;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.domain.ProgressRequestBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookType;
-import com.example.bookmanager.model.FinishOperator;
 import com.example.bookmanager.model.OperatorListener;
 import com.example.bookmanager.model.ProgressOperator;
 import com.example.bookmanager.model.DialogsHelper;
@@ -43,8 +54,9 @@ import com.lxj.xpopup.impl.LoadingPopupView;
 
 import org.json.JSONException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,7 +83,9 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     private ProgressAdapter adapter;
     private ProgressOperator operator;
     private View view;
+    private Uri coverUri = null;
 
+    private IUriCallback callback;
     private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -87,7 +101,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
                     if (data.size() == 0) {
                         noDataTip.setVisibility(View.VISIBLE);
                     } else {
-                        noDataTip.setVisibility(View.INVISIBLE);
+                        noDataTip.setVisibility(INVISIBLE);
                     }
                 }
             });
@@ -101,6 +115,25 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
                     RequestHelper.sendRequest(isbnCode, this);
                 }
             });
+
+    private ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    callback.returnPhotoUri(coverUri);
+                }
+            });
+
+    private ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            result -> {
+                if (result) {
+                    takePhoto();
+                } else {
+                    Toast.makeText(getContext(), "请到权限中心开启权限！", Toast.LENGTH_SHORT).show();
+                }
+            });
+
 
     @Nullable
     @Override
@@ -132,7 +165,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         operator.query(this);
 
         // FloatingActionButton监听
-        floatingAdd.setOnClickListener(v -> DialogsHelper.showAddDialog(getContext(), this));
+        floatingAdd.setOnClickListener(v -> DialogsHelper.showAddDialog(getContext(),this));
 
         // RecyclerView子项点击监听
         adapter.setOnItemClickListener(position -> DialogsHelper.showUpdateDialog(
@@ -189,14 +222,53 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String endTime = format.format(date);
         FinishBook finishBook = new FinishBook(
-                book.getName(),book.getAuthor(),book.getPage(),
-                book.getAddTime(),endTime,book.getHistory()
+                book.getName(),book.getAuthor(),book.getPage(),book.getAddTime(),
+                endTime,book.getHistory(),book.getCover(),book.getCoverUrl()
         );
         Bundle finish = new Bundle();
         finish.putSerializable("Book", finishBook);
         getParentFragmentManager().setFragmentResult("Finish", finish);
         operator.delete(book,position,this);
     }
+
+
+    @Override
+    public void startCamera(ImageView takePhoto, ImageView takeCover, IUriCallback callback) {
+        this.callback = callback;
+        assert getActivity() != null && getContext() != null;
+        if(ContextCompat.checkSelfPermission( getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
+            permissionLauncher.launch(Manifest.permission.CAMERA);
+        } else {
+            takePhoto();
+        }
+    }
+
+    private void takePhoto() {
+        // 创建图片文件对象，父路径为当前程序的cache目录
+        assert getContext() != null;
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss",Locale.getDefault());
+        String filename = format.format(date);
+        File outputImage = new File(getContext().getExternalCacheDir(), filename+".jpg");
+        if (outputImage.exists()) {
+            outputImage.delete();
+        }
+        try {
+            outputImage.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 判断版本，将File转换为Uri
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            coverUri = FileProvider.getUriForFile(getContext(), "com.example.bookmanager.fileprovider", outputImage);
+        } else {
+            coverUri = Uri.fromFile(outputImage);
+        }
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,coverUri);
+        cameraLauncher.launch(intent);
+    }
+
 
     @Override
     public void onSuccess(List<Book> data, int... position) {
@@ -210,7 +282,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         if (data.size() == 0) {
             noDataTip.setVisibility(View.VISIBLE);
         } else {
-            noDataTip.setVisibility(View.INVISIBLE);
+            noDataTip.setVisibility(INVISIBLE);
         }
     }
 

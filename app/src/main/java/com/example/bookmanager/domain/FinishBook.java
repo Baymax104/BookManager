@@ -1,5 +1,8 @@
 package com.example.bookmanager.domain;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import kotlin.jvm.internal.ShortSpreadBuilder;
 
 /**
@@ -16,13 +19,10 @@ public class FinishBook extends Book {
     public FinishBook() {
     }
 
-    public FinishBook(String name, String author, int page, String addTime, String endTime, String history) {
-        this.name = name;
-        this.author = author;
-        this.page = page;
+    public FinishBook(String name, String author, int page, String addTime, String endTime, String history, String cover,String coverUrl) {
+        super(name,author,page,history,cover,coverUrl);
         this.addTime = addTime;
         this.endTime = endTime;
-        this.history = history;
     }
 
     public String getAuthor() {
@@ -71,5 +71,21 @@ public class FinishBook extends Book {
 
     public void setHistory(String history) {
         this.history = history;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }

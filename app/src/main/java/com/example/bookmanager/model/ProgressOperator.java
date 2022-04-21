@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.ProgressBook;
@@ -31,7 +32,7 @@ public class ProgressOperator implements BookOperator {
 
     public ProgressOperator(Context context) {
         this.context = context;
-        helper = new SQLHelper(context, "BookManager.db", null, version);
+        helper = new SQLHelper(context, "BookManager.db", null, VERSION);
     }
 
     @Override
@@ -44,7 +45,6 @@ public class ProgressOperator implements BookOperator {
         db.beginTransaction();
         try (Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(), book.getAuthor()})) {
 
-            // 若存在相同记录则更新，否则插入
             if (cursor == null) {
                 throw new BookException("数据不存在", BookException.ErrorType.INSERT_ERROR);
             }
@@ -56,6 +56,8 @@ public class ProgressOperator implements BookOperator {
                 values.put("progress", book.getProgress());
                 values.put("page", book.getPage());
                 values.put("history", book.getHistory());
+                values.put("cover", book.getCover());
+                values.put("coverUrl", book.getCoverUrl());
                 long insertId = db.insert(tableName,null,values);
                 if (insertId == -1) {
                     throw new BookException("添加失败1", BookException.ErrorType.INSERT_ERROR);
@@ -97,7 +99,7 @@ public class ProgressOperator implements BookOperator {
         List<Book> data;
         String queryExistsSQL = "select * from ProgressBook where name=? and author=?";
         db.beginTransaction();
-        try (Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{((ProgressBook) book).getName(), ((ProgressBook) book).getAuthor()})) {
+        try (Cursor cursor = db.rawQuery(queryExistsSQL, new String[]{book.getName(), book.getAuthor()})) {
 
             if (cursor == null || cursor.getCount() == 0) {
                 throw new BookException("数据不存在", BookException.ErrorType.UPDATE_ERROR);
@@ -179,6 +181,8 @@ public class ProgressOperator implements BookOperator {
             values.put("progress", fromBook.getProgress());
             values.put("page", fromBook.getPage());
             values.put("history", fromBook.getHistory());
+            values.put("cover", fromBook.getCover());
+            values.put("coverUrl",fromBook.getCoverUrl());
             int row = db.update(tableName,values,"id=?",new String[]{toId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -191,6 +195,8 @@ public class ProgressOperator implements BookOperator {
             values.put("progress", toBook.getProgress());
             values.put("page", toBook.getPage());
             values.put("history", toBook.getHistory());
+            values.put("cover", toBook.getCover());
+            values.put("coverUrl", toBook.getCoverUrl());
             row = db.update(tableName,values, "id=?",new String[]{fromId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -221,7 +227,12 @@ public class ProgressOperator implements BookOperator {
                 int progress = cursor.getInt(4);
                 int page = cursor.getInt(5);
                 String history = cursor.getString(6);
-                data.add(new ProgressBook(name, author, addTime, progress, page, history));
+                String cover = cursor.getString(7);
+                String coverUrl = cursor.getString(8);
+                data.add(new ProgressBook(
+                        name, author, addTime,
+                        progress, page, history,cover,coverUrl
+                ));
             }
             cursor.close();
             return new ArrayList<>(data);

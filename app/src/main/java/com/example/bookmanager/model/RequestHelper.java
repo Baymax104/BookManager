@@ -1,5 +1,6 @@
 package com.example.bookmanager.model;
 
+
 import androidx.annotation.NonNull;
 
 import com.example.bookmanager.domain.ProgressRequestBook;
@@ -86,14 +87,14 @@ public class RequestHelper {
         }
         String isbn = data.getString("code");
         String publishing = data.getString("publishing");
-        String photoUrl = data.getString("photoUrl");
+        String coverUrl = data.getString("photoUrl");
         String description = data.getString("description");
         Date nowDate = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String addTime = dateFormat.format(nowDate);
         return new ProgressRequestBook(
                 name,author,addTime,
-                page,isbn,photoUrl,
+                page,isbn,coverUrl,
                 publishing,description
         );
     }
@@ -109,5 +110,4 @@ public class RequestHelper {
             return wrong;
         }
     }
-
 }

@@ -1,5 +1,8 @@
 package com.example.bookmanager.domain;
 
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+
 /**
  * @Description Book类的子类，网络请求后返回的实体类，用于图书信息显示
  * @Author Jake
@@ -9,17 +12,16 @@ package com.example.bookmanager.domain;
  */
 public class ProgressRequestBook extends ProgressBook {
     private String isbn;
-    private String photoUrl;
     private String publishing;
     private String description;
 
     public ProgressRequestBook() {
     }
 
-    public ProgressRequestBook(String name, String author, String addTime, int page, String isbn, String photoUrl, String publishing, String description) {
+    public ProgressRequestBook(String name, String author, String addTime, int page, String isbn, String coverUrl, String publishing, String description) {
         super(name, author, addTime, 0, page);
         this.isbn = isbn;
-        this.photoUrl = photoUrl;
+        this.coverUrl = coverUrl;
         this.publishing = publishing;
         this.description = description;
     }
@@ -32,12 +34,12 @@ public class ProgressRequestBook extends ProgressBook {
         this.isbn = isbn;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getCoverUrl() {
+        return coverUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 
     public String getPublishing() {

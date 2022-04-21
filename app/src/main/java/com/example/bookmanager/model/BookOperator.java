@@ -13,7 +13,7 @@ import java.util.List;
  * @Version
  */
 public interface BookOperator {
-    int version = 4;
+    int VERSION = 6;
     void insert(Book book, OperatorListener listener);
     void query(OperatorListener listener);
     void update(Book book, OperatorListener listener);

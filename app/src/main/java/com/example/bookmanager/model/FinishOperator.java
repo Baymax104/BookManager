@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.FinishBook;
@@ -29,7 +30,7 @@ public class FinishOperator implements BookOperator {
 
     public FinishOperator(Context context) {
         this.context = context;
-        helper = new SQLHelper(context,"BookManager.db",null,version);
+        helper = new SQLHelper(context,"BookManager.db",null, VERSION);
     }
 
     @Override
@@ -53,6 +54,9 @@ public class FinishOperator implements BookOperator {
                 values.put("page", book.getPage());
                 values.put("addTime", book.getAddTime());
                 values.put("endTime", book.getEndTime());
+                values.put("history",book.getHistory());
+                values.put("cover", book.getCover());
+                values.put("coverUrl",book.getCoverUrl());
                 int row = db.update(tableName,values,"name=? and author=?",new String[]{
                         book.getName(),
                         book.getAuthor()
@@ -68,6 +72,8 @@ public class FinishOperator implements BookOperator {
                 values.put("addTime", book.getAddTime());
                 values.put("endTime", book.getEndTime());
                 values.put("history", book.getHistory());
+                values.put("cover", book.getCover());
+                values.put("coverUrl", book.getCoverUrl());
                 long insertId = db.insert(tableName,null,values);
                 if (insertId == -1) {
                     throw new BookException("添加失败", BookException.ErrorType.INSERT_ERROR);
@@ -160,6 +166,8 @@ public class FinishOperator implements BookOperator {
             values.put("addTime", fromBook.getAddTime());
             values.put("endTime", fromBook.getEndTime());
             values.put("history", fromBook.getHistory());
+            values.put("cover", fromBook.getCover());
+            values.put("coverUrl", fromBook.getCoverUrl());
             int row = db.update(tableName,values,"id=?",new String[]{toId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -172,6 +180,8 @@ public class FinishOperator implements BookOperator {
             values.put("addTime", toBook.getAddTime());
             values.put("endTime", toBook.getEndTime());
             values.put("history", toBook.getHistory());
+            values.put("cover", toBook.getCover());
+            values.put("coverUrl",toBook.getCoverUrl());
             row = db.update(tableName,values, "id=?",new String[]{fromId});
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.SORT_ERROR);
@@ -204,7 +214,12 @@ public class FinishOperator implements BookOperator {
                 String addTime = cursor.getString(4);
                 String endTime = cursor.getString(5);
                 String history = cursor.getString(6);
-                data.add(new FinishBook(name,author,page,addTime,endTime,history));
+                String cover = cursor.getString(7);
+                String coverUrl = cursor.getString(8);
+                data.add(new FinishBook(
+                        name,author,page,
+                        addTime,endTime,history,cover,coverUrl
+                ));
             }
             cursor.close();
             return new ArrayList<>(data);

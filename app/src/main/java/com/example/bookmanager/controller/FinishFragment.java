@@ -145,21 +145,6 @@ public class FinishFragment extends Fragment implements OperatorListener, IDialo
 
     }
 
-    // 该页面不需要此功能
-    @Override
-    public void scanBarcode() {
-    }
-
-    // 该页面不需要此功能
-    @Override
-    public void insertBook(Book book) {
-    }
-
-    // 该页面不需要此功能
-    @Override
-    public void updateBook(Book book) {
-    }
-
     @Override
     public void deleteBook(Book book1, int position, boolean... isRestart) {
         // 若删除来源为重新开始对话框
@@ -167,7 +152,7 @@ public class FinishFragment extends Fragment implements OperatorListener, IDialo
             FinishBook book = (FinishBook) book1;
             ProgressBook progressBook = new ProgressBook(
                     book.getName(),book.getAuthor(),book.getAddTime(),
-                    0,book.getPage(),book.getHistory()
+                    0,book.getPage(),book.getHistory(),book.getCover()
             );
             Bundle restart = new Bundle();
             restart.putSerializable("Book",progressBook);

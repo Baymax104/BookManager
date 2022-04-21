@@ -1,17 +1,24 @@
 package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.callbacks.IUriCallback;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
-import com.lxj.xpopup.core.CenterPopupView;
+import com.lxj.xpopup.core.BottomPopupView;
 
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -23,9 +30,12 @@ import java.util.Locale;
  * @Date 2022/4/17 16:01
  * @Version
  */
-public class ManualAddDialog extends CenterPopupView {
+public class ManualAddDialog extends BottomPopupView implements IUriCallback {
     private IDialogCallback callback;
     private Context context;
+    private String coverUri;
+    private ImageView takePhoto;
+    private ImageView takeCover;
 
     public ManualAddDialog(@NonNull Context context) {
         super(context);
@@ -42,6 +52,9 @@ public class ManualAddDialog extends CenterPopupView {
         super.onCreate();
         TextView confirm = findViewById(R.id.insert_confirm);
         TextView cancel = findViewById(R.id.insert_cancel);
+        takePhoto = findViewById(R.id.take_photo);
+        takeCover = findViewById(R.id.take_book_cover);
+        takeCover.setOnClickListener(view -> callback.startCamera(takePhoto,takeCover,this));
         cancel.setOnClickListener(view1 -> dismiss());
         confirm.setOnClickListener(view1 -> {
             EditText inputName = findViewById(R.id.input_book_name);
@@ -58,7 +71,7 @@ public class ManualAddDialog extends CenterPopupView {
                 Date nowTime = new Date(System.currentTimeMillis());
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 String addTime = dateFormat.format(nowTime);
-                ProgressBook progressBook = new ProgressBook(name, author, addTime, 0, page);
+                ProgressBook progressBook = new ProgressBook(name, author, addTime, 0, page, coverUri);
                 callback.insertBook(progressBook);
                 dismiss();
             } else {
@@ -70,5 +83,12 @@ public class ManualAddDialog extends CenterPopupView {
     @Override
     protected int getImplLayoutId() {
         return R.layout.dialog_manual_add;
+    }
+
+    @Override
+    public void returnPhotoUri(Uri uri) {
+        Glide.with(context).load(uri).into(takeCover);
+        takePhoto.setVisibility(INVISIBLE);
+        this.coverUri = uri.toString();
     }
 }

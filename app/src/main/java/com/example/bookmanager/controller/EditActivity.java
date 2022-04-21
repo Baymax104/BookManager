@@ -25,7 +25,7 @@ import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookOperator;
 import com.example.bookmanager.model.BookType;
 import com.example.bookmanager.model.FinishOperator;
-import com.example.bookmanager.model.OperatorListener;
+import com.example.bookmanager.model.BookOperatorListener;
 import com.example.bookmanager.model.ProgressOperator;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Stack;
 
 
-public class EditActivity extends AppCompatActivity implements IMoveSwipeCallback, OperatorListener {
+public class EditActivity extends AppCompatActivity implements IMoveSwipeCallback, BookOperatorListener {
 
     private RecyclerView bookList;
     private TextView noDataTip;

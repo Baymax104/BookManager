@@ -6,8 +6,6 @@ import static android.view.View.INVISIBLE;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +42,7 @@ import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.domain.ProgressRequestBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookType;
-import com.example.bookmanager.model.OperatorListener;
+import com.example.bookmanager.model.BookOperatorListener;
 import com.example.bookmanager.model.ProgressOperator;
 import com.example.bookmanager.model.DialogsHelper;
 import com.example.bookmanager.model.RequestHelper;
@@ -55,7 +53,6 @@ import com.lxj.xpopup.impl.LoadingPopupView;
 import org.json.JSONException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
@@ -72,7 +69,7 @@ import java.util.Objects;
  * @Date 2022/4/17 21:02
  * @Version
  */
-public class ProgressFragment extends Fragment implements OperatorListener, IDialogCallback, IRequestCallback {
+public class ProgressFragment extends Fragment implements BookOperatorListener, IDialogCallback, IRequestCallback {
 
     private DrawerLayout drawerLayout;
     private FloatingActionButton floatingAdd;
@@ -167,10 +164,15 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
         // FloatingActionButton监听
         floatingAdd.setOnClickListener(v -> DialogsHelper.showAddDialog(getContext(),this));
 
+//        // RecyclerView子项点击监听
+//        adapter.setOnItemClickListener(position -> DialogsHelper.showUpdateDialog(
+//                getContext(),position,data,this
+//        ));
         // RecyclerView子项点击监听
-        adapter.setOnItemClickListener(position -> DialogsHelper.showUpdateDialog(
-                getContext(),position,data,this
-        ));
+        adapter.setOnItemClickListener(position -> {
+            ProgressBook book = data.get(position);
+            HistoryActivity.actionStart(getContext(),book);
+        });
     }
 
     private void initView() {
@@ -205,7 +207,7 @@ public class ProgressFragment extends Fragment implements OperatorListener, IDia
     public void insertBook(Book book1) {
         ProgressBook book = (ProgressBook) book1;
         int size = data.size() + 1;
-        String history = "h" + size;
+        String history = "h_" + size;
         book.setHistory(history);
         operator.insert(book, this);
     }

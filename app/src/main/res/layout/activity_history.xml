@@ -17,11 +17,12 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:contentScrim="@color/bar_color"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                android:fitsSystemWindows="true">
+                android:fitsSystemWindows="true"
+                app:statusBarScrim="@android:color/transparent">
             <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/fruit_img_bar"
+                    android:id="@+id/book_img_bar"
                     android:scaleType="centerCrop"
                     app:layout_collapseMode="parallax"
                     android:fitsSystemWindows="true"/>
@@ -29,18 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:id="@+id/tool_bar"
-                    android:background="@color/bar_color"
-                    android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    app:layout_collapseMode="pin">
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"/>
-            </androidx.appcompat.widget.Toolbar>
+                    app:layout_collapseMode="pin"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

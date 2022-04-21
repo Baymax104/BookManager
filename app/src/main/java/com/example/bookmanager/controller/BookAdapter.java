@@ -28,7 +28,7 @@ public abstract class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewH
         }
     }
 
-    public BookAdapter(List<? extends Book> data, boolean isEdit) {
+    protected BookAdapter(List<? extends Book> data, boolean isEdit) {
         this.data = data;
         this.isEdit = isEdit;
     }

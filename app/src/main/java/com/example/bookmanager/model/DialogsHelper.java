@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.fragment.app.Fragment;
 
 import com.example.bookmanager.controller.Dialogs.FinishConfirmDialog;
+import com.example.bookmanager.controller.Dialogs.HistoryEditDialog;
 import com.example.bookmanager.controller.Dialogs.InfoChangeDialog;
 import com.example.bookmanager.controller.Dialogs.RestartConfirmDialog;
 import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
@@ -85,5 +86,12 @@ public class DialogsHelper {
                 .asLoading();
         view.show();
         return view;
+    }
+
+    public static void showHistoryEditDialog(Context context) {
+        new XPopup.Builder(context)
+                .dismissOnTouchOutside(true)
+                .asCustom(new HistoryEditDialog(context))
+                .show();
     }
 }

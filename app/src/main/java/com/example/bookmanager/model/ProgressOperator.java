@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.ProgressBook;
@@ -36,7 +35,7 @@ public class ProgressOperator implements BookOperator {
     }
 
     @Override
-    public void insert(Book book1, OperatorListener listener) {
+    public void insert(Book book1, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ProgressBook book = (ProgressBook) book1;
         List<Book> data;
@@ -60,7 +59,7 @@ public class ProgressOperator implements BookOperator {
                 values.put("coverUrl", book.getCoverUrl());
                 long insertId = db.insert(tableName,null,values);
                 if (insertId == -1) {
-                    throw new BookException("添加失败1", BookException.ErrorType.INSERT_ERROR);
+                    throw new BookException("添加失败", BookException.ErrorType.INSERT_ERROR);
                 }
                 createItemTable(book);
             } else {
@@ -68,7 +67,7 @@ public class ProgressOperator implements BookOperator {
             }
             data = getDataAfterOperate();
             if (data == null) {
-                throw new BookException("返回数据失败2", BookException.ErrorType.INSERT_ERROR);
+                throw new BookException("返回数据失败", BookException.ErrorType.INSERT_ERROR);
             }
             listener.onSuccess(data);
             db.setTransactionSuccessful();
@@ -80,7 +79,7 @@ public class ProgressOperator implements BookOperator {
     }
 
     @Override
-    public void query(OperatorListener listener) {
+    public void query(BookOperatorListener listener) {
         try {
             List<Book> data = getDataAfterOperate();
             if (data == null) {
@@ -93,7 +92,7 @@ public class ProgressOperator implements BookOperator {
     }
 
     @Override
-    public void update(Book book1, OperatorListener listener) {
+    public void update(Book book1, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ProgressBook book = (ProgressBook) book1;
         List<Book> data;
@@ -126,7 +125,7 @@ public class ProgressOperator implements BookOperator {
     }
 
     @Override
-    public void delete(Book book1, int position, OperatorListener listener) {
+    public void delete(Book book1, int position, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ProgressBook book = (ProgressBook) book1;
         List<Book> data;
@@ -153,7 +152,7 @@ public class ProgressOperator implements BookOperator {
     }
 
     @Override
-    public void swap(Book fromBook1, Book toBook1, int fromPosition, int toPosition, OperatorListener listener) {
+    public void swap(Book fromBook1, Book toBook1, int fromPosition, int toPosition, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ProgressBook fromBook = (ProgressBook) fromBook1;
         ProgressBook toBook = (ProgressBook) toBook1;

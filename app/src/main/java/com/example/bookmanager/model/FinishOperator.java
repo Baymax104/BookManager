@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.FinishBook;
@@ -34,7 +33,7 @@ public class FinishOperator implements BookOperator {
     }
 
     @Override
-    public void insert(Book book1, OperatorListener listener) {
+    public void insert(Book book1, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         FinishBook book = (FinishBook) book1;
         List<Book> data;
@@ -94,7 +93,7 @@ public class FinishOperator implements BookOperator {
     }
 
     @Override
-    public void query(OperatorListener listener) {
+    public void query(BookOperatorListener listener) {
         try {
             List<Book> data = getDataAfterOperate();
             if (data == null) {
@@ -107,11 +106,11 @@ public class FinishOperator implements BookOperator {
     }
 
     @Override
-    public void update(Book book1, OperatorListener listener) {
+    public void update(Book book1, BookOperatorListener listener) {
     }
 
     @Override
-    public void delete(Book book1, int position, OperatorListener listener) {
+    public void delete(Book book1, int position, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         FinishBook book = (FinishBook) book1;
         List<Book> data;
@@ -138,7 +137,7 @@ public class FinishOperator implements BookOperator {
     }
 
     @Override
-    public void swap(Book fromBook1, Book toBook1, int fromPosition, int toPosition, OperatorListener listener) {
+    public void swap(Book fromBook1, Book toBook1, int fromPosition, int toPosition, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         FinishBook fromBook = (FinishBook) fromBook1;
         FinishBook toBook = (FinishBook) toBook1;

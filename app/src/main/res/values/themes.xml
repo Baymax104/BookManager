@@ -20,13 +20,7 @@
         <item name="overlapAnchor">false</item>
     </style>
 
-    <!--BottomSheetDialog圆角效果-->
-    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
-    </style>
-    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
+    <!--NavigationView选中与未选中-->
     <style name="NavigationViewButton" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/main_color</item>
         <item name="android:textColorSecondary">@color/book_card</item>

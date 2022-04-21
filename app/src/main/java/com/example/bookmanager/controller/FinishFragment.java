@@ -29,10 +29,9 @@ import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookType;
 import com.example.bookmanager.model.DialogsHelper;
 import com.example.bookmanager.model.FinishOperator;
-import com.example.bookmanager.model.OperatorListener;
+import com.example.bookmanager.model.BookOperatorListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,7 +41,7 @@ import java.util.List;
  * @Date 2022/4/18 10:32
  * @Version
  */
-public class FinishFragment extends Fragment implements OperatorListener, IDialogCallback {
+public class FinishFragment extends Fragment implements BookOperatorListener, IDialogCallback {
     private View view;
     private List<FinishBook> data = new ArrayList<>();
     private DrawerLayout drawerLayout;

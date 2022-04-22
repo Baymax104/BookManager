@@ -64,15 +64,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end">
+
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:text="@string/update_progress"
                             android:textColor="@color/black"
                             android:gravity="center_vertical"
-                            android:layout_marginEnd="20dp"
+                            android:layout_marginEnd="25dp"
                             android:id="@+id/update_progress"
-                            android:layout_alignParentEnd="true"/>
+                            android:layout_alignParentEnd="true" />
                     <View
                             android:layout_width="1dp"
                             android:layout_height="27dp"
@@ -95,6 +96,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/history_list" />
+            <!--底部留白部分-->
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@android:color/transparent"/>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

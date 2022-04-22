@@ -77,21 +77,20 @@ public class HistoryOperator implements Operator {
 
     public void update(History history, HistoryOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        String querySQL = "select * from "+tableName+" where startPage=? and endPage=?";
+        String querySQL = "select * from "+tableName+" where id=?";
         List<History> data;
         db.beginTransaction();
-        try (Cursor cursor = db.rawQuery(querySQL, new String[]{String.valueOf(history.getStartPage()),String.valueOf(history.getEndPage())})) {
+        try (Cursor cursor = db.rawQuery(querySQL, new String[]{String.valueOf(history.getId())})) {
             if (cursor == null || cursor.getCount() == 0) {
                 throw new BookException("数据不存在", BookException.ErrorType.UPDATE_ERROR);
             }
             ContentValues values = new ContentValues();
             values.put("updateTime", history.getUpdateTime());
+            values.put("startPage", history.getStartPage());
+            values.put("endPage", history.getEndPage());
             int row = db.update(
-                    tableName, values, "startPage=? and endPage=?",
-                    new String[]{
-                            String.valueOf(history.getStartPage()),
-                            String.valueOf(history.getEndPage())
-                    }
+                    tableName, values, "id=?",
+                    new String[]{String.valueOf(history.getId()),}
             );
             if (row == 0) {
                 throw new BookException("更新失败", BookException.ErrorType.UPDATE_ERROR);
@@ -145,11 +144,12 @@ public class HistoryOperator implements Operator {
         Cursor cursor = db.rawQuery(querySQL, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
+                int id = cursor.getInt(0);
                 String updateTime = cursor.getString(1);
                 int startPage = cursor.getInt(2);
                 int endPage = cursor.getInt(3);
                 data.add(new History(
-                        book.getPage(),updateTime,
+                        id, book.getPage(),updateTime,
                         startPage,endPage
                 ));
             }

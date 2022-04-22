@@ -1,8 +1,9 @@
 package com.example.bookmanager.controller.Dialogs;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,12 +14,10 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
-import com.example.bookmanager.controller.callbacks.IUriCallback;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.lxj.xpopup.core.BottomPopupView;
 
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -30,12 +29,26 @@ import java.util.Locale;
  * @Date 2022/4/17 16:01
  * @Version
  */
-public class ManualAddDialog extends BottomPopupView implements IUriCallback {
+public class ManualAddDialog extends BottomPopupView {
     private IDialogCallback callback;
     private Context context;
     private String coverUri;
     private ImageView takePhoto;
     private ImageView takeCover;
+
+    private BroadcastReceiver uriReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getStringExtra("uri") != null) {
+                String uri = intent.getStringExtra("uri");
+                Glide.with(context).load(uri).into(takeCover);
+                takePhoto.setVisibility(INVISIBLE);
+                coverUri = uri;
+                abortBroadcast();
+            }
+        }
+    };
 
     public ManualAddDialog(@NonNull Context context) {
         super(context);
@@ -50,11 +63,19 @@ public class ManualAddDialog extends BottomPopupView implements IUriCallback {
     @Override
     protected void onCreate() {
         super.onCreate();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.example.bookmanager.RETURNURI");
+        context.registerReceiver(uriReceiver,filter);
+
         TextView confirm = findViewById(R.id.insert_confirm);
         TextView cancel = findViewById(R.id.insert_cancel);
         takePhoto = findViewById(R.id.take_photo);
         takeCover = findViewById(R.id.take_book_cover);
-        takeCover.setOnClickListener(view -> callback.startCamera(takePhoto,takeCover,this));
+
+        takeCover.setOnClickListener(view -> {
+            Intent intent = new Intent("com.example.bookmanager.STARTCAMERA");
+            context.sendOrderedBroadcast(intent, null);
+        });
         cancel.setOnClickListener(view1 -> dismiss());
         confirm.setOnClickListener(view1 -> {
             EditText inputName = findViewById(R.id.input_book_name);
@@ -81,14 +102,14 @@ public class ManualAddDialog extends BottomPopupView implements IUriCallback {
     }
 
     @Override
+    public void onDestroy() {
+        context.unregisterReceiver(uriReceiver);
+        super.onDestroy();
+    }
+
+    @Override
     protected int getImplLayoutId() {
         return R.layout.dialog_manual_add;
     }
 
-    @Override
-    public void returnPhotoUri(Uri uri) {
-        Glide.with(context).load(uri).into(takeCover);
-        takePhoto.setVisibility(INVISIBLE);
-        this.coverUri = uri.toString();
-    }
 }

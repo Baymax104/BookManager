@@ -23,6 +23,12 @@ public class ProgressBook extends Book {
         this.addTime = addTime;
         this.progress = progress;
     }
+
+    public ProgressBook(String name, String author, int page, String history, String cover, String coverUrl, String addTime) {
+        super(name, author, page, history, cover, coverUrl);
+        this.addTime = addTime;
+    }
+
     public ProgressBook(String name, String author, String addTime, int progress, int page, String cover) {
         super(name,author,page);
         this.addTime = addTime;

@@ -1,5 +1,7 @@
 package com.example.bookmanager.domain;
 
+import java.io.Serializable;
+
 /**
  * @Description
  * @Author Jake
@@ -7,7 +9,8 @@ package com.example.bookmanager.domain;
  * @Date 2022/4/21 13:48
  * @Version
  */
-public class History {
+public class History implements Serializable {
+    private int id;
     private int page;
     private String updateTime;
     private int startPage;
@@ -24,6 +27,14 @@ public class History {
     }
 
     public History(String updateTime, int startPage, int endPage) {
+        this.updateTime = updateTime;
+        this.startPage = startPage;
+        this.endPage = endPage;
+    }
+
+    public History(int id, int page, String updateTime, int startPage, int endPage) {
+        this.id = id;
+        this.page = page;
         this.updateTime = updateTime;
         this.startPage = startPage;
         this.endPage = endPage;
@@ -59,5 +70,13 @@ public class History {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

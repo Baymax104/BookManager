@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.ProgressBook;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +22,7 @@ import java.util.Locale;
  * @Date 2022/4/14 20:03
  * @Version
  */
-public class ProgressOperator implements BookOperator {
+public class ProgressOperator implements BookOperator, Serializable {
     private Context context;
     private SQLHelper helper;
     private final String tableName = "ProgressBook";
@@ -105,6 +106,7 @@ public class ProgressOperator implements BookOperator {
             }
             ContentValues values = new ContentValues();
             values.put("progress", book.getProgress());
+            values.put("addTime", book.getAddTime());
             int row = db.update(tableName, values, "name=? and author=?", new String[]{
                     book.getName(), book.getAuthor()
             });

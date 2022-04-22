@@ -1,10 +1,12 @@
 package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.lxj.xpopup.core.CenterPopupView;
 
 /**
@@ -15,15 +17,38 @@ import com.lxj.xpopup.core.CenterPopupView;
  * @Version
  */
 public class HistoryEditDialog extends CenterPopupView {
+    private Context context;
+    private IDialogCallback callback;
+    private int position;
+
 
     public HistoryEditDialog(@NonNull Context context) {
         super(context);
+    }
 
+    public HistoryEditDialog(@NonNull Context context, int position, IDialogCallback callback) {
+        super(context);
+        this.context = context;
+        this.callback = callback;
+        this.position = position;
+    }
 
+    @Override
+    protected void onCreate() {
+        super.onCreate();
+        TextView updateDate = findViewById(R.id.history_update);
+        TextView deleteHistory = findViewById(R.id.history_delete);
+
+        updateDate.setOnClickListener(view -> dismissWith(() -> callback.startSelectTime(position)));
+        deleteHistory.setOnClickListener(view -> {
+            callback.deleteHistory(position);
+            dismiss();
+        });
     }
 
     @Override
     protected int getImplLayoutId() {
         return R.layout.dialog_history_edit;
     }
+
 }

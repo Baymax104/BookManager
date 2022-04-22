@@ -1,15 +1,19 @@
 package com.example.bookmanager.model;
 
 import android.content.Context;
+import android.graphics.Color;
 
-import androidx.fragment.app.Fragment;
 
+import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.view.TimePickerView;
+import com.example.bookmanager.R;
 import com.example.bookmanager.controller.Dialogs.FinishConfirmDialog;
 import com.example.bookmanager.controller.Dialogs.HistoryEditDialog;
 import com.example.bookmanager.controller.Dialogs.InfoChangeDialog;
 import com.example.bookmanager.controller.Dialogs.RestartConfirmDialog;
 import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
 import com.example.bookmanager.domain.FinishBook;
+import com.example.bookmanager.domain.History;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.domain.ProgressRequestBook;
 import com.example.bookmanager.controller.Dialogs.AddDialog;
@@ -19,9 +23,11 @@ import com.example.bookmanager.controller.Dialogs.ManualAddDialog;
 import com.example.bookmanager.controller.Dialogs.UpdateDialog;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.LoadingPopupView;
-import com.lxj.xpopup.widget.LoadingView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Description
@@ -46,10 +52,10 @@ public class DialogsHelper {
                 .show();
     }
 
-    public static void showUpdateDialog(Context context, int position, List<ProgressBook> data, IDialogCallback callback) {
+    public static void showUpdateDialog(Context context, List<History> data, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .dismissOnTouchOutside(true)
-                .asCustom(new UpdateDialog(context,position,data,callback))
+                .asCustom(new UpdateDialog(context,data,callback))
                 .show();
     }
 
@@ -88,10 +94,32 @@ public class DialogsHelper {
         return view;
     }
 
-    public static void showHistoryEditDialog(Context context) {
+    public static void showHistoryEditDialog(Context context, int position, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .dismissOnTouchOutside(true)
-                .asCustom(new HistoryEditDialog(context))
+                .asCustom(new HistoryEditDialog(context,position,callback))
                 .show();
+    }
+
+    public static void showDatePicker(Context context, int position, IDialogCallback callback) {
+        Calendar nowDate = Calendar.getInstance();
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(2000,0,1);
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(2050,11,31);
+        TimePickerView picker = new TimePickerBuilder(context, (date, v) -> {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String updateTime = format.format(date);
+            callback.updateHistory(updateTime, position);
+        })
+                .setSubmitColor(Color.parseColor("#1e90ff"))
+                .setCancelColor(Color.RED)
+                .setDate(nowDate)
+                .setTitleText("选择日期")
+                .setDividerColor(Color.parseColor("#1e90ff"))
+                .setTextColorCenter(Color.parseColor("#1e90ff"))
+                .setRangDate(startDate, endDate)
+                .build();
+        picker.show();
     }
 }

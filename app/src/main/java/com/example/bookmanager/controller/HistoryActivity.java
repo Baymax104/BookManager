@@ -9,18 +9,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
+import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.History;
 import com.example.bookmanager.domain.ProgressBook;
@@ -31,12 +35,15 @@ import com.example.bookmanager.model.HistoryOperatorListener;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.List;
-import java.util.Objects;
 
-public class HistoryActivity extends AppCompatActivity implements HistoryOperatorListener {
+public class HistoryActivity extends AppCompatActivity implements HistoryOperatorListener, IDialogCallback {
 
     private RecyclerView historyList;
+    private ProgressBar progressBar;
+    private TextView updateProgress;
+    private TextView progressNum;
     private Book book;
+    private boolean isFinish;
     private HistoryAdapter adapter;
     private HistoryOperator operator;
     private List<History> data;
@@ -44,25 +51,37 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        initView();
+
+        Intent intent = getIntent();
+        book = (Book) intent.getSerializableExtra("book");
+        isFinish = intent.getBooleanExtra("isFinish", true);
 
         adapter = new HistoryAdapter(data, this);
         operator = new HistoryOperator(this, book);
+        operator.query(this);
+        initView();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setStackFromEnd(true);
+        manager.setReverseLayout(true);
         historyList.setLayoutManager(manager);
         historyList.setAdapter(adapter);
 
-        operator.query(this);
-
-        adapter.setOnItemClickListener(position -> DialogsHelper.showHistoryEditDialog(this));
+        if (!isFinish) {
+            adapter.setOnItemClickListener(position -> DialogsHelper.showHistoryEditDialog(this,position,this));
+            updateProgress.setOnClickListener(view -> DialogsHelper.showUpdateDialog(this,data,this));
+        }
     }
 
     private void initView() {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         CollapsingToolbarLayout collapsingLayout = findViewById(R.id.collapse_bar);
         ImageView imageBar = findViewById(R.id.book_img_bar);
+        FrameLayout progressFrameLayout = findViewById(R.id.progress_frame_layout);
         historyList = findViewById(R.id.history_list);
+        updateProgress = findViewById(R.id.update_progress);
+        progressNum = findViewById(R.id.history_progress);
+        progressBar = findViewById(R.id.history_progress_bar);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -73,8 +92,6 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        Intent intent = getIntent();
-        book = (Book) intent.getSerializableExtra("book");
 
         collapsingLayout.setTitle(book.getName());
         collapsingLayout.setCollapsedTitleTextColor(Color.BLACK);
@@ -85,11 +102,23 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         } else {
             Glide.with(this).load(R.drawable.no_cover).into(imageBar);
         }
+
+        if (isFinish) {
+            progressFrameLayout.setVisibility(View.GONE);
+        } else {
+            ProgressBook book1 = (ProgressBook) book;
+            Resources resources = getResources();
+            progressNum.setText(String.format(resources.getString(R.string.progress_display),book1.getProgress(),book1.getPage()));
+            double pro = book1.getProgress() * 1.0 / book1.getPage();
+            int progress = (int) (pro * 100);
+            progressBar.setProgress(progress);
+        }
     }
 
-    public static void actionStart(Context context, ProgressBook book) {
+    public static void actionStart(Context context, ProgressBook book, boolean isFinish) {
         Intent intent = new Intent(context, HistoryActivity.class);
         intent.putExtra("book", book);
+        intent.putExtra("isFinish", isFinish);
         context.startActivity(intent);
     }
 
@@ -100,6 +129,25 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
             finish();
         }
         return true;
+    }
+
+    @Override
+    public void insertHistory(History history) {
+        Resources resources = getResources();
+        progressNum.setText(String.format(resources.getString(R.string.progress_display),history.getEndPage(),history.getPage()));
+        double pro = history.getEndPage() * 1.0 / history.getPage();
+        int progress = (int) (pro * 100);
+        progressBar.setProgress(progress);
+        operator.insert(history,this);
+        ProgressBook book1 = (ProgressBook) book;
+        ProgressBook updateBook = new ProgressBook(
+                book1.getName(),book1.getAuthor(),book1.getAddTime(),
+                history.getEndPage(),book1.getPage(),book1.getHistory(),
+                book1.getCover(),book1.getCoverUrl()
+        );
+        Intent intent = new Intent("com.example.bookmanager.UPDATEPROGRESS");
+        intent.putExtra("book", updateBook);
+        sendOrderedBroadcast(intent,null);
     }
 
     @Override
@@ -132,4 +180,55 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
                 break;
         }
     }
+
+    @Override
+    public void deleteHistory(int position) {
+        History history = data.get(position);
+        if (history.getId() == 1) { // 第一条历史
+            Toast.makeText(this, "该记录不可删除", Toast.LENGTH_SHORT).show();
+        } else if (position == data.size() - 1) { // 最后一条历史，需要更新进度
+            Resources resources = getResources();
+            progressNum.setText(String.format(resources.getString(R.string.progress_display),history.getStartPage(),history.getPage()));
+            double pro = history.getStartPage() * 1.0 / history.getPage();
+            int progress = (int) (pro * 100);
+            progressBar.setProgress(progress);
+            ProgressBook book1 = (ProgressBook) book;
+            ProgressBook updateBook = new ProgressBook(
+                    book1.getName(),book1.getAuthor(),book1.getAddTime(),
+                    history.getStartPage(),book1.getPage(),book1.getHistory(),
+                    book1.getCover(),book1.getCoverUrl()
+            );
+            operator.delete(history, position, this);
+            Intent intent = new Intent("com.example.bookmanager.UPDATEPROGRESS");
+            intent.putExtra("book", updateBook);
+            sendOrderedBroadcast(intent,null);
+        } else { // 中途历史，不需要更改进度
+            History preHistory = data.get(position - 1);
+            History postHistory = data.get(position + 1);
+            postHistory.setStartPage(preHistory.getEndPage());
+            operator.update(postHistory, this);
+            operator.delete(history, position, this);
+        }
+    }
+
+    @Override
+    public void startSelectTime(int position) {
+        DialogsHelper.showDatePicker(this, position, this);
+    }
+
+    @Override
+    public void updateHistory(String updateTime, int position) {
+        History history = data.get(position);
+        history.setUpdateTime(updateTime);
+        // 若修改开始阅读时间，则通知ProgressActivity修改
+        if (history.getId() == 1) {
+            Intent intent = new Intent("com.example.bookmanager.UPDATE_ADDTIME");
+            ProgressBook book1 = (ProgressBook) book;
+            book1.setAddTime(updateTime);
+            intent.putExtra("book", book1);
+            sendBroadcast(intent);
+        }
+        operator.update(history, this);
+    }
+
 }

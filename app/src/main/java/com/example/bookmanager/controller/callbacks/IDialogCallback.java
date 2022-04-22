@@ -1,8 +1,7 @@
 package com.example.bookmanager.controller.callbacks;
 
-import android.widget.ImageView;
-
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.domain.History;
 
 /**
  * @Description 对话框监听回调接口
@@ -12,14 +11,18 @@ import com.example.bookmanager.domain.Book;
  * @Version
  */
 public interface IDialogCallback {
-    default void scanBarcode() {
-    }
     default void insertBook(Book book) {
     }
     default void updateBook(Book book) {
     }
     default void deleteBook(Book book, int position, boolean... isRestart) {
     }
-    default void startCamera(ImageView takePhoto, ImageView takeCover, IUriCallback callback) {
+    default void deleteHistory(int position) {
+    }
+    default void insertHistory(History history) {
+    }
+    default void startSelectTime(int position) {
+    }
+    default void updateHistory(String updateTime, int position) {
     }
 }

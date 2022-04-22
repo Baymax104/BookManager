@@ -4,7 +4,10 @@ import static android.app.Activity.RESULT_OK;
 import static android.view.View.INVISIBLE;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -16,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.controller.callbacks.IRequestCallback;
-import com.example.bookmanager.controller.callbacks.IUriCallback;
 import com.example.bookmanager.domain.Book;
 import com.example.bookmanager.domain.FinishBook;
 import com.example.bookmanager.domain.ProgressBook;
@@ -82,7 +83,6 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
     private View view;
     private Uri coverUri = null;
 
-    private IUriCallback callback;
     private ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -117,7 +117,11 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    callback.returnPhotoUri(coverUri);
+                    Intent intent = new Intent("com.example.bookmanager.RETURNURI");
+                    String uri = coverUri.toString();
+                    intent.putExtra("uri", uri);
+                    assert getContext() != null;
+                    getContext().sendOrderedBroadcast(intent, null);
                 }
             });
 
@@ -131,6 +135,44 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
                 }
             });
 
+    private BroadcastReceiver addTimeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ProgressBook book = (ProgressBook) intent.getSerializableExtra("book");
+            operator.update(book, ProgressFragment.this);
+        }
+    };
+
+    private BroadcastReceiver cameraReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            assert getActivity() != null && getContext() != null;
+            if(ContextCompat.checkSelfPermission( getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
+                permissionLauncher.launch(Manifest.permission.CAMERA);
+            } else {
+                takePhoto();
+            }
+            abortBroadcast();
+        }
+    };
+
+    private BroadcastReceiver progressReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ProgressBook book = (ProgressBook) intent.getSerializableExtra("book");
+            operator.update(book, ProgressFragment.this);
+            abortBroadcast();
+        }
+    };
+
+    private BroadcastReceiver scanReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent intent1 = new Intent(getContext(), BookCaptureActivity.class);
+            scanLauncher.launch(intent1);
+            abortBroadcast();
+        }
+    };
 
     @Nullable
     @Override
@@ -144,6 +186,22 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
         initView();
+
+        // 注册接收器
+        IntentFilter addTimeFilter = new IntentFilter();
+        addTimeFilter.addAction("com.example.bookmanager.UPDATE_ADDTIME");
+        IntentFilter cameraFilter = new IntentFilter();
+        cameraFilter.addAction("com.example.bookmanager.STARTCAMERA");
+        IntentFilter progressFilter = new IntentFilter();
+        progressFilter.addAction("com.example.bookmanager.UPDATEPROGRESS");
+        IntentFilter scanFilter = new IntentFilter();
+        scanFilter.addAction("com.example.bookmanager.STARTSCAN");
+        assert getContext() != null;
+        getContext().registerReceiver(addTimeReceiver, addTimeFilter);
+        getContext().registerReceiver(cameraReceiver, cameraFilter);
+        getContext().registerReceiver(progressReceiver, progressFilter);
+        getContext().registerReceiver(scanReceiver, scanFilter);
+
 
         adapter = new ProgressAdapter(getContext(), data, false);
         operator = new ProgressOperator(getContext());
@@ -164,14 +222,10 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         // FloatingActionButton监听
         floatingAdd.setOnClickListener(v -> DialogsHelper.showAddDialog(getContext(),this));
 
-//        // RecyclerView子项点击监听
-//        adapter.setOnItemClickListener(position -> DialogsHelper.showUpdateDialog(
-//                getContext(),position,data,this
-//        ));
         // RecyclerView子项点击监听
         adapter.setOnItemClickListener(position -> {
             ProgressBook book = data.get(position);
-            HistoryActivity.actionStart(getContext(),book);
+            HistoryActivity.actionStart(getContext(),book, false);
         });
     }
 
@@ -180,6 +234,16 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         floatingAdd = view.findViewById(R.id.floating_add);
         bookList = view.findViewById(R.id.book_list);
         noDataTip = view.findViewById(R.id.no_data_tip);
+    }
+
+    @Override
+    public void onDestroy() {
+        assert getContext() != null;
+        getContext().unregisterReceiver(addTimeReceiver);
+        getContext().unregisterReceiver(cameraReceiver);
+        getContext().unregisterReceiver(progressReceiver);
+        getContext().unregisterReceiver(scanReceiver);
+        super.onDestroy();
     }
 
     @Override
@@ -195,12 +259,6 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
             drawerLayout.openDrawer(GravityCompat.START);
         }
         return true;
-    }
-
-    @Override
-    public void scanBarcode() {
-        Intent intent = new Intent(getContext(), BookCaptureActivity.class);
-        scanLauncher.launch(intent);
     }
 
     @Override
@@ -233,17 +291,6 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         operator.delete(book,position,this);
     }
 
-
-    @Override
-    public void startCamera(ImageView takePhoto, ImageView takeCover, IUriCallback callback) {
-        this.callback = callback;
-        assert getActivity() != null && getContext() != null;
-        if(ContextCompat.checkSelfPermission( getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
-            permissionLauncher.launch(Manifest.permission.CAMERA);
-        } else {
-            takePhoto();
-        }
-    }
 
     private void takePhoto() {
         // 创建图片文件对象，父路径为当前程序的cache目录

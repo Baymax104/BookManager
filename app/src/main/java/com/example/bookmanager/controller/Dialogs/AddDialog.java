@@ -1,6 +1,7 @@
 package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,7 +40,10 @@ public class AddDialog extends CenterPopupView {
         TextView manualAdd = findViewById(R.id.manual_add);
         TextView scanAdd = findViewById(R.id.scan_add);
         manualAdd.setOnClickListener(v -> dismissWith(() -> DialogsHelper.showManualAddDialog(context,callback)));
-        scanAdd.setOnClickListener(v -> dismissWith(() -> callback.scanBarcode()));
+        scanAdd.setOnClickListener(v -> dismissWith(() -> {
+            Intent intent = new Intent("com.example.bookmanager.STARTSCAN");
+            context.sendOrderedBroadcast(intent, null);
+        }));
     }
 
     @Override

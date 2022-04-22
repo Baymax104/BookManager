@@ -1,6 +1,7 @@
 package com.example.bookmanager.controller.Dialogs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +69,11 @@ public class UpdateDialog extends CenterPopupView {
                                 history.getEndPage(),progress
                         );
                         callback.insertHistory(newHistory);
+                        if (newHistory.getEndPage() == newHistory.getPage()) {
+                            Intent intent = new Intent("com.example.bookmanager.FINISH_BOOK");
+                            intent.putExtra("endTime", updateTime);
+                            context.sendOrderedBroadcast(intent, null);
+                        }
                         dismiss();
                     } else if (progress < history.getEndPage()) {
                         Toast.makeText(context, "不能往回读哦", Toast.LENGTH_SHORT).show();

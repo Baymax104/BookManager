@@ -117,7 +117,7 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    Intent intent = new Intent("com.example.bookmanager.RETURNURI");
+                    Intent intent = new Intent("com.example.bookmanager.RETURN_URI");
                     String uri = coverUri.toString();
                     intent.putExtra("uri", uri);
                     assert getContext() != null;
@@ -174,6 +174,23 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         }
     };
 
+    private BroadcastReceiver finishReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ProgressBook book = (ProgressBook) intent.getSerializableExtra("book");
+            String endTime = intent.getStringExtra("endTime");
+            FinishBook finishBook = new FinishBook(
+                    book.getName(),book.getAuthor(),book.getPage(),book.getAddTime(),
+                    endTime,book.getHistory(),book.getCover(),book.getCoverUrl()
+            );
+            int position = data.indexOf(book);
+            operator.delete(book, position, ProgressFragment.this);
+            Bundle finish = new Bundle();
+            finish.putSerializable("book", finishBook);
+            getParentFragmentManager().setFragmentResult("Finish", finish);
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -189,18 +206,21 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
 
         // 注册接收器
         IntentFilter addTimeFilter = new IntentFilter();
-        addTimeFilter.addAction("com.example.bookmanager.UPDATE_ADDTIME");
+        addTimeFilter.addAction("com.example.bookmanager.UPDATE_ADD_TIME");
         IntentFilter cameraFilter = new IntentFilter();
-        cameraFilter.addAction("com.example.bookmanager.STARTCAMERA");
+        cameraFilter.addAction("com.example.bookmanager.START_CAMERA");
         IntentFilter progressFilter = new IntentFilter();
-        progressFilter.addAction("com.example.bookmanager.UPDATEPROGRESS");
+        progressFilter.addAction("com.example.bookmanager.UPDATE_PROGRESS");
         IntentFilter scanFilter = new IntentFilter();
-        scanFilter.addAction("com.example.bookmanager.STARTSCAN");
+        scanFilter.addAction("com.example.bookmanager.START_SCAN");
+        IntentFilter finishFilter = new IntentFilter();
+        finishFilter.addAction("com.example.bookmanager.DELETE_FINISH_BOOK");
         assert getContext() != null;
         getContext().registerReceiver(addTimeReceiver, addTimeFilter);
         getContext().registerReceiver(cameraReceiver, cameraFilter);
         getContext().registerReceiver(progressReceiver, progressFilter);
         getContext().registerReceiver(scanReceiver, scanFilter);
+        getContext().registerReceiver(finishReceiver, finishFilter);
 
 
         adapter = new ProgressAdapter(getContext(), data, false);
@@ -243,6 +263,7 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         getContext().unregisterReceiver(cameraReceiver);
         getContext().unregisterReceiver(progressReceiver);
         getContext().unregisterReceiver(scanReceiver);
+        getContext().unregisterReceiver(finishReceiver);
         super.onDestroy();
     }
 

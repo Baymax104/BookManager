@@ -7,8 +7,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,10 +49,26 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
     private HistoryAdapter adapter;
     private HistoryOperator operator;
     private List<History> data;
+    private BroadcastReceiver finishReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String endTime = intent.getStringExtra("endTime");
+            Intent intent1 = new Intent("com.example.bookmanager.DELETE_FINISH_BOOK");
+            ProgressBook progressBook = (ProgressBook) book;
+            intent1.putExtra("book", progressBook);
+            intent1.putExtra("endTime", endTime);
+            sendOrderedBroadcast(intent1, null);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+
+        IntentFilter finishFilter = new IntentFilter();
+        finishFilter.addAction("com.example.bookmanager.FINISH_BOOK");
+        registerReceiver(finishReceiver,finishFilter);
 
         Intent intent = getIntent();
         book = (Book) intent.getSerializableExtra("book");
@@ -119,6 +137,12 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(finishReceiver);
+        super.onDestroy();
+    }
+
     public static void actionStart(Context context, ProgressBook book, boolean isFinish) {
         Intent intent = new Intent(context, HistoryActivity.class);
         intent.putExtra("book", book);
@@ -149,7 +173,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
                 history.getEndPage(),book1.getPage(),book1.getHistory(),
                 book1.getCover(),book1.getCoverUrl()
         );
-        Intent intent = new Intent("com.example.bookmanager.UPDATEPROGRESS");
+        Intent intent = new Intent("com.example.bookmanager.UPDATE_PROGRESS");
         intent.putExtra("book", updateBook);
         sendOrderedBroadcast(intent,null);
     }
@@ -203,7 +227,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
                     book1.getCover(),book1.getCoverUrl()
             );
             operator.delete(history, position, this);
-            Intent intent = new Intent("com.example.bookmanager.UPDATEPROGRESS");
+            Intent intent = new Intent("com.example.bookmanager.UPDATE_PROGRESS");
             intent.putExtra("book", updateBook);
             sendOrderedBroadcast(intent,null);
         } else { // 中途历史，不需要更改进度
@@ -226,7 +250,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         history.setUpdateTime(updateTime);
         // 若修改开始阅读时间，则通知ProgressActivity修改
         if (history.getId() == 1) {
-            Intent intent = new Intent("com.example.bookmanager.UPDATE_ADDTIME");
+            Intent intent = new Intent("com.example.bookmanager.UPDATE_ADD_TIME");
             ProgressBook book1 = (ProgressBook) book;
             book1.setAddTime(updateTime);
             intent.putExtra("book", book1);

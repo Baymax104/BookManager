@@ -41,7 +41,7 @@ public class AddDialog extends CenterPopupView {
         TextView scanAdd = findViewById(R.id.scan_add);
         manualAdd.setOnClickListener(v -> dismissWith(() -> DialogsHelper.showManualAddDialog(context,callback)));
         scanAdd.setOnClickListener(v -> dismissWith(() -> {
-            Intent intent = new Intent("com.example.bookmanager.STARTSCAN");
+            Intent intent = new Intent("com.example.bookmanager.START_SCAN");
             context.sendOrderedBroadcast(intent, null);
         }));
     }

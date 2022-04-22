@@ -91,7 +91,7 @@ public class FinishFragment extends Fragment implements BookOperatorListener, ID
         bookList.setAdapter(adapter);
 
         getParentFragmentManager().setFragmentResultListener("Finish",this,(requestKey, result) -> {
-            FinishBook book = (FinishBook) result.getSerializable("Book");
+            FinishBook book = (FinishBook) result.getSerializable("book");
             operator.insert(book, this);
         });
 

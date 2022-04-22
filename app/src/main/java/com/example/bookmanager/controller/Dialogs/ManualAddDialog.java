@@ -64,7 +64,7 @@ public class ManualAddDialog extends BottomPopupView {
     protected void onCreate() {
         super.onCreate();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.example.bookmanager.RETURNURI");
+        filter.addAction("com.example.bookmanager.RETURN_URI");
         context.registerReceiver(uriReceiver,filter);
 
         TextView confirm = findViewById(R.id.insert_confirm);
@@ -73,7 +73,7 @@ public class ManualAddDialog extends BottomPopupView {
         takeCover = findViewById(R.id.take_book_cover);
 
         takeCover.setOnClickListener(view -> {
-            Intent intent = new Intent("com.example.bookmanager.STARTCAMERA");
+            Intent intent = new Intent("com.example.bookmanager.START_CAMERA");
             context.sendOrderedBroadcast(intent, null);
         });
         cancel.setOnClickListener(view1 -> dismiss());

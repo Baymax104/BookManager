@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -57,7 +58,11 @@ public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCall
         TextView infoIsbn = findViewById(R.id.book_info_isbn);
         TextView infoDescription = findViewById(R.id.book_info_description);
 
-        Glide.with(context).load(requestBook.getCoverUrl()).into(bookCover);
+        if (requestBook.getCoverUrl() == null) {
+            Glide.with(context).load(R.drawable.no_cover).into(bookCover);
+        } else {
+            Glide.with(context).load(requestBook.getCoverUrl()).into(bookCover);
+        }
         Resources resources = getResources();
         infoPublishing.setText(String.format(resources.getString(R.string.info_publishing),requestBook.getPublishing()));
         infoIsbn.setText(String.format(resources.getString(R.string.info_isbn), requestBook.getIsbn()));
@@ -72,8 +77,12 @@ public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCall
         TextView confirm = findViewById(R.id.insert_confirm);
         TextView cancel = findViewById(R.id.insert_cancel);
         confirm.setOnClickListener(view1 -> {
-            callback.insertBook(requestBook);
-            dismiss();
+            if (requestBook.getPage() != 0) {
+                callback.insertBook(requestBook);
+                dismiss();
+            } else {
+                Toast.makeText(context, "页数不能为0，请点击卡片修改", Toast.LENGTH_SHORT).show();
+            }
         });
         cancel.setOnClickListener(view1 -> dismiss());
     }

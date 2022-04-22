@@ -69,7 +69,12 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
 
         if (!isFinish) {
             adapter.setOnItemClickListener(position -> DialogsHelper.showHistoryEditDialog(this,position,this));
-            updateProgress.setOnClickListener(view -> DialogsHelper.showUpdateDialog(this,data,this));
+            updateProgress.setOnClickListener(view -> {
+                    History history = data.get(data.size() - 1);
+                    if (history.getEndPage() != history.getPage()) {
+                        DialogsHelper.showUpdateDialog(this, data, this);
+                    }
+            });
         }
     }
 
@@ -91,7 +96,6 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         }
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
 
         collapsingLayout.setTitle(book.getName());
         collapsingLayout.setCollapsedTitleTextColor(Color.BLACK);

@@ -86,15 +86,19 @@ public class ManualAddDialog extends BottomPopupView {
                     inputAuthor != null && !inputAuthor.getText().toString().equals("") &&
                     inputPage != null && !inputPage.getText().toString().equals("")) {
 
-                String name = inputName.getText().toString();
-                String author = inputAuthor.getText().toString();
                 int page = Integer.parseInt(inputPage.getText().toString());
-                Date nowTime = new Date(System.currentTimeMillis());
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                String addTime = dateFormat.format(nowTime);
-                ProgressBook progressBook = new ProgressBook(name, author, addTime, 0, page, coverUri);
-                callback.insertBook(progressBook);
-                dismiss();
+                if (page != 0) {
+                    String name = inputName.getText().toString();
+                    String author = inputAuthor.getText().toString();
+                    Date nowTime = new Date(System.currentTimeMillis());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    String addTime = dateFormat.format(nowTime);
+                    ProgressBook progressBook = new ProgressBook(name, author, addTime, 0, page, coverUri);
+                    callback.insertBook(progressBook);
+                    dismiss();
+                } else {
+                    Toast.makeText(context, "页数不能为0", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(context, "请输入完整信息", Toast.LENGTH_SHORT).show();
             }

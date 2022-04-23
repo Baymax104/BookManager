@@ -121,7 +121,7 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
                     String uri = coverUri.toString();
                     intent.putExtra("uri", uri);
                     assert getContext() != null;
-                    getContext().sendOrderedBroadcast(intent, null);
+                    getContext().sendBroadcast(intent);
                 }
             });
 
@@ -152,7 +152,6 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
             } else {
                 takePhoto();
             }
-            abortBroadcast();
         }
     };
 
@@ -161,7 +160,6 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         public void onReceive(Context context, Intent intent) {
             ProgressBook book = (ProgressBook) intent.getSerializableExtra("book");
             operator.update(book, ProgressFragment.this);
-            abortBroadcast();
         }
     };
 
@@ -170,7 +168,6 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
         public void onReceive(Context context, Intent intent) {
             Intent intent1 = new Intent(getContext(), BookCaptureActivity.class);
             scanLauncher.launch(intent1);
-            abortBroadcast();
         }
     };
 
@@ -184,7 +181,7 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
                     endTime,book.getHistory(),book.getCover(),book.getCoverUrl()
             );
             int position = data.indexOf(book);
-            operator.delete(book, position, ProgressFragment.this);
+            operator.delete(book, position, false, ProgressFragment.this);
             Bundle finish = new Bundle();
             finish.putSerializable("book", finishBook);
             getParentFragmentManager().setFragmentResult("Finish", finish);
@@ -232,7 +229,7 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
 
         // 监听重新开始结果
         getParentFragmentManager().setFragmentResultListener("Restart",this,(requestKey, result) -> {
-            ProgressBook book = (ProgressBook) result.getSerializable("Book");
+            ProgressBook book = (ProgressBook) result.getSerializable("book");
             operator.insert(book, this);
         });
 
@@ -285,33 +282,13 @@ public class ProgressFragment extends Fragment implements BookOperatorListener, 
     @Override
     public void insertBook(Book book1) {
         ProgressBook book = (ProgressBook) book1;
-        int size = data.size() + 1;
-        String history = "h_" + size;
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss", Locale.getDefault());
+        String dateName = format.format(date);
+        String history = "h_" + dateName;
         book.setHistory(history);
         operator.insert(book, this);
     }
-
-    @Override
-    public void updateBook(Book progressBook) {
-        operator.update(progressBook, this);
-    }
-
-    @Override
-    public void deleteBook(Book book1, int position, boolean... isRestart) {
-        ProgressBook book = (ProgressBook) book1;
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String endTime = format.format(date);
-        FinishBook finishBook = new FinishBook(
-                book.getName(),book.getAuthor(),book.getPage(),book.getAddTime(),
-                endTime,book.getHistory(),book.getCover(),book.getCoverUrl()
-        );
-        Bundle finish = new Bundle();
-        finish.putSerializable("Book", finishBook);
-        getParentFragmentManager().setFragmentResult("Finish", finish);
-        operator.delete(book,position,this);
-    }
-
 
     private void takePhoto() {
         // 创建图片文件对象，父路径为当前程序的cache目录

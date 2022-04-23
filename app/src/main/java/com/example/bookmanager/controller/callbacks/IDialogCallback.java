@@ -13,10 +13,6 @@ import com.example.bookmanager.domain.History;
 public interface IDialogCallback {
     default void insertBook(Book book) {
     }
-    default void updateBook(Book book) {
-    }
-    default void deleteBook(Book book, int position, boolean... isRestart) {
-    }
     default void deleteHistory(int position) {
     }
     default void insertHistory(History history) {

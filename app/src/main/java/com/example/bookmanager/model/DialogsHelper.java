@@ -6,21 +6,18 @@ import android.graphics.Color;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.view.TimePickerView;
-import com.example.bookmanager.R;
-import com.example.bookmanager.controller.Dialogs.FinishConfirmDialog;
-import com.example.bookmanager.controller.Dialogs.HistoryEditDialog;
-import com.example.bookmanager.controller.Dialogs.InfoChangeDialog;
-import com.example.bookmanager.controller.Dialogs.RestartConfirmDialog;
+import com.example.bookmanager.controller.dialogs.HistoryEditDialog;
+import com.example.bookmanager.controller.dialogs.InfoChangeDialog;
+import com.example.bookmanager.controller.dialogs.RestartConfirmDialog;
 import com.example.bookmanager.controller.callbacks.InfoChangeCallback;
 import com.example.bookmanager.domain.FinishBook;
 import com.example.bookmanager.domain.History;
-import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.domain.ProgressRequestBook;
-import com.example.bookmanager.controller.Dialogs.AddDialog;
+import com.example.bookmanager.controller.dialogs.AddDialog;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
-import com.example.bookmanager.controller.Dialogs.InfoDisplayDialog;
-import com.example.bookmanager.controller.Dialogs.ManualAddDialog;
-import com.example.bookmanager.controller.Dialogs.UpdateDialog;
+import com.example.bookmanager.controller.dialogs.InfoDisplayDialog;
+import com.example.bookmanager.controller.dialogs.ManualAddDialog;
+import com.example.bookmanager.controller.dialogs.UpdateDialog;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.LoadingPopupView;
 
@@ -72,17 +69,10 @@ public class DialogsHelper {
                 .show();
     }
 
-    public static void showFinishConfirmDialog(Context context, ProgressBook book, int position, IDialogCallback callback) {
+    public static void showRestartConfirmDialog(Context context) {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true)
-                .asCustom(new FinishConfirmDialog(context,book,position,callback))
-                .show();
-    }
-
-    public static void showRestartConfirmDialog(Context context, List<FinishBook> data, int position, IDialogCallback callback) {
-        new XPopup.Builder(context)
-                .isDestroyOnDismiss(true)
-                .asCustom(new RestartConfirmDialog(context, data, position, callback))
+                .asCustom(new RestartConfirmDialog(context))
                 .show();
     }
 

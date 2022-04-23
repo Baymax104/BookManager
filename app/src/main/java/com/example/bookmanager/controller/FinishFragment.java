@@ -2,7 +2,10 @@ package com.example.bookmanager.controller;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -27,7 +30,6 @@ import com.example.bookmanager.domain.FinishBook;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.model.BookException;
 import com.example.bookmanager.model.BookType;
-import com.example.bookmanager.model.DialogsHelper;
 import com.example.bookmanager.model.FinishOperator;
 import com.example.bookmanager.model.BookOperatorListener;
 
@@ -70,6 +72,22 @@ public class FinishFragment extends Fragment implements BookOperatorListener, ID
                 }
             });
 
+    private BroadcastReceiver restartReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FinishBook book = (FinishBook) intent.getSerializableExtra("book");
+            ProgressBook progressBook = new ProgressBook(
+                    book.getName(),book.getAuthor(),book.getAddTime(),0,
+                    book.getPage(),book.getHistory(),book.getCover(),book.getCoverUrl()
+            );
+            int position = data.indexOf(book);
+            operator.delete(book, position, false, FinishFragment.this);
+            Bundle restart = new Bundle();
+            restart.putSerializable("book", progressBook);
+            getParentFragmentManager().setFragmentResult("Restart", restart);
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,6 +100,11 @@ public class FinishFragment extends Fragment implements BookOperatorListener, ID
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
         initView();
+
+        IntentFilter restartFilter = new IntentFilter();
+        restartFilter.addAction("com.example.bookmanager.DELETE_RESTART_BOOK");
+        assert getContext() != null;
+        getContext().registerReceiver(restartReceiver,restartFilter);
 
         adapter = new FinishAdapter(getContext(), data, false);
         operator = new FinishOperator(getContext());
@@ -97,15 +120,24 @@ public class FinishFragment extends Fragment implements BookOperatorListener, ID
 
         operator.query(this);
 
-        adapter.setOnItemClickListener(position -> DialogsHelper.showRestartConfirmDialog(
-                getContext(),data,position,this
-        ));
+        adapter.setOnItemClickListener(position -> {
+            FinishBook book = data.get(position);
+            HistoryActivity.actionStart(getContext(), book, true);
+        });
+
     }
 
     private void initView() {
         drawerLayout = requireActivity().findViewById(R.id.drawer_layout);
         bookList = view.findViewById(R.id.book_list);
         noDataTip = view.findViewById(R.id.no_data_tip);
+    }
+
+    @Override
+    public void onDestroyView() {
+        assert getContext() != null;
+        getContext().unregisterReceiver(restartReceiver);
+        super.onDestroyView();
     }
 
     @Override
@@ -142,21 +174,5 @@ public class FinishFragment extends Fragment implements BookOperatorListener, ID
     @Override
     public void onError(BookException e) {
 
-    }
-
-    @Override
-    public void deleteBook(Book book1, int position, boolean... isRestart) {
-        // 若删除来源为重新开始对话框
-        if (isRestart.length == 1 && isRestart[0]) {
-            FinishBook book = (FinishBook) book1;
-            ProgressBook progressBook = new ProgressBook(
-                    book.getName(),book.getAuthor(),book.getAddTime(),
-                    0,book.getPage(),book.getHistory(),book.getCover()
-            );
-            Bundle restart = new Bundle();
-            restart.putSerializable("Book",progressBook);
-            getParentFragmentManager().setFragmentResult("Restart",restart);
-        }
-        operator.delete(book1,position,this);
     }
 }

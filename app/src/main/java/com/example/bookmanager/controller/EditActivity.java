@@ -139,7 +139,7 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
     public void onBackPressed() {
         while (!delStack.empty()) {
             DelItem item = delStack.pop();
-            operator.delete(item.delBook,item.position,this);
+            operator.delete(item.delBook,item.position, true, this);
         }
         Book[] passData = data.toArray(new Book[0]);
         setResult(RESULT_OK, new Intent().putExtra("BookData", passData));
@@ -153,7 +153,7 @@ public class EditActivity extends AppCompatActivity implements IMoveSwipeCallbac
             // 出栈删除
             while (!delStack.empty()) {
                 DelItem delItem = delStack.pop();
-                operator.delete(delItem.delBook,delItem.position,this);
+                operator.delete(delItem.delBook,delItem.position, true, this);
             }
             Book[] passData = data.toArray(new Book[0]);
             setResult(RESULT_OK, new Intent().putExtra("BookData", passData));

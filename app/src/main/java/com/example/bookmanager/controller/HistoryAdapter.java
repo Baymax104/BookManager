@@ -81,7 +81,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.historyPage.setText(String.format(resources.getString(R.string.history_page),history.getStartPage(),history.getEndPage()));
             holder.timeDot.setImageResource(R.drawable.time_dot);
         }
-        holder.historyPage.setOnClickListener(view1 -> listener.onItemClick(position));
+        if (listener != null) {
+            holder.historyPage.setOnClickListener(view1 -> listener.onItemClick(position));
+        }
     }
 
     @Override

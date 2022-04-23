@@ -110,7 +110,7 @@ public class FinishOperator implements BookOperator {
     }
 
     @Override
-    public void delete(Book book1, int position, BookOperatorListener listener) {
+    public void delete(Book book1, int position, boolean isEdit, BookOperatorListener listener) {
         SQLiteDatabase db = helper.getWritableDatabase();
         FinishBook book = (FinishBook) book1;
         List<Book> data;
@@ -122,7 +122,9 @@ public class FinishOperator implements BookOperator {
             if (row == 0) {
                 throw new BookException("删除失败", BookException.ErrorType.DELETE_ERROR);
             }
-            deleteItemTable(book);
+            if (isEdit) {
+                deleteItemTable(book);
+            }
             data = getDataAfterOperate();
             if (data == null) {
                 throw new BookException("返回数据失败", BookException.ErrorType.DELETE_ERROR);

@@ -19,8 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.example.bookmanager.R;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
 import com.example.bookmanager.domain.Book;
+import com.example.bookmanager.domain.FinishBook;
 import com.example.bookmanager.domain.History;
 import com.example.bookmanager.domain.ProgressBook;
 import com.example.bookmanager.model.BookException;
@@ -44,8 +47,10 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
     private ProgressBar progressBar;
     private TextView updateProgress;
     private TextView progressNum;
+    private ImageButton restartButton;
     private Book book;
     private boolean isFinish;
+    private boolean isRestart = false;
     private HistoryAdapter adapter;
     private HistoryOperator operator;
     private List<History> data;
@@ -57,7 +62,17 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
             ProgressBook progressBook = (ProgressBook) book;
             intent1.putExtra("book", progressBook);
             intent1.putExtra("endTime", endTime);
-            sendOrderedBroadcast(intent1, null);
+            sendBroadcast(intent1);
+        }
+    };
+    private BroadcastReceiver restartReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isRestart = true;
+            Intent intent1 = new Intent("com.example.bookmanager.DELETE_RESTART_BOOK");
+            FinishBook finishBook = (FinishBook) book;
+            intent1.putExtra("book", finishBook);
+            sendBroadcast(intent1);
         }
     };
 
@@ -68,7 +83,10 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
 
         IntentFilter finishFilter = new IntentFilter();
         finishFilter.addAction("com.example.bookmanager.FINISH_BOOK");
+        IntentFilter restartFilter = new IntentFilter();
+        restartFilter.addAction("com.example.bookmanager.RESTART");
         registerReceiver(finishReceiver,finishFilter);
+        registerReceiver(restartReceiver, restartFilter);
 
         Intent intent = getIntent();
         book = (Book) intent.getSerializableExtra("book");
@@ -93,6 +111,12 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
                         DialogsHelper.showUpdateDialog(this, data, this);
                     }
             });
+        } else {
+            restartButton.setOnClickListener(view -> {
+                if (!isRestart) {
+                    DialogsHelper.showRestartConfirmDialog(this);
+                }
+            });
         }
     }
 
@@ -101,6 +125,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         CollapsingToolbarLayout collapsingLayout = findViewById(R.id.collapse_bar);
         ImageView imageBar = findViewById(R.id.book_img_bar);
         FrameLayout progressFrameLayout = findViewById(R.id.progress_frame_layout);
+        restartButton = findViewById(R.id.restart_button);
         historyList = findViewById(R.id.history_list);
         updateProgress = findViewById(R.id.update_progress);
         progressNum = findViewById(R.id.history_progress);
@@ -127,6 +152,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
 
         if (isFinish) {
             progressFrameLayout.setVisibility(View.GONE);
+            restartButton.setVisibility(View.VISIBLE);
         } else {
             ProgressBook book1 = (ProgressBook) book;
             Resources resources = getResources();
@@ -140,10 +166,11 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
     @Override
     protected void onDestroy() {
         unregisterReceiver(finishReceiver);
+        unregisterReceiver(restartReceiver);
         super.onDestroy();
     }
 
-    public static void actionStart(Context context, ProgressBook book, boolean isFinish) {
+    public static void actionStart(Context context, Book book, boolean isFinish) {
         Intent intent = new Intent(context, HistoryActivity.class);
         intent.putExtra("book", book);
         intent.putExtra("isFinish", isFinish);
@@ -175,7 +202,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         );
         Intent intent = new Intent("com.example.bookmanager.UPDATE_PROGRESS");
         intent.putExtra("book", updateBook);
-        sendOrderedBroadcast(intent,null);
+        sendBroadcast(intent);
     }
 
     @Override
@@ -229,7 +256,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
             operator.delete(history, position, this);
             Intent intent = new Intent("com.example.bookmanager.UPDATE_PROGRESS");
             intent.putExtra("book", updateBook);
-            sendOrderedBroadcast(intent,null);
+            sendBroadcast(intent);
         } else { // 中途历史，不需要更改进度
             History preHistory = data.get(position - 1);
             History postHistory = data.get(position + 1);

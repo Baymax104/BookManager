@@ -1,10 +1,9 @@
-package com.example.bookmanager.controller.Dialogs;
+package com.example.bookmanager.controller.dialogs;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,7 +44,6 @@ public class ManualAddDialog extends BottomPopupView {
                 Glide.with(context).load(uri).into(takeCover);
                 takePhoto.setVisibility(INVISIBLE);
                 coverUri = uri;
-                abortBroadcast();
             }
         }
     };
@@ -74,7 +72,7 @@ public class ManualAddDialog extends BottomPopupView {
 
         takeCover.setOnClickListener(view -> {
             Intent intent = new Intent("com.example.bookmanager.START_CAMERA");
-            context.sendOrderedBroadcast(intent, null);
+            context.sendBroadcast(intent);
         });
         cancel.setOnClickListener(view1 -> dismiss());
         confirm.setOnClickListener(view1 -> {

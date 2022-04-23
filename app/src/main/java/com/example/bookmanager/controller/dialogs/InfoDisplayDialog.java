@@ -1,4 +1,4 @@
-package com.example.bookmanager.controller.Dialogs;
+package com.example.bookmanager.controller.dialogs;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -58,7 +58,7 @@ public class InfoDisplayDialog extends BottomPopupView implements InfoChangeCall
         TextView infoIsbn = findViewById(R.id.book_info_isbn);
         TextView infoDescription = findViewById(R.id.book_info_description);
 
-        if (requestBook.getCoverUrl() == null) {
+        if (requestBook.getCoverUrl().equals("null")) {
             Glide.with(context).load(R.drawable.no_cover).into(bookCover);
         } else {
             Glide.with(context).load(requestBook.getCoverUrl()).into(bookCover);

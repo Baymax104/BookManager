@@ -1,4 +1,4 @@
-package com.example.bookmanager.controller.Dialogs;
+package com.example.bookmanager.controller.dialogs;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import com.example.bookmanager.R;
 import com.example.bookmanager.domain.History;
 import com.example.bookmanager.controller.callbacks.IDialogCallback;
-import com.example.bookmanager.model.DialogsHelper;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import java.text.SimpleDateFormat;

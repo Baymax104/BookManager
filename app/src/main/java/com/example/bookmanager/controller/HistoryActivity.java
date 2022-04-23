@@ -50,7 +50,6 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
     private ImageButton restartButton;
     private Book book;
     private boolean isFinish;
-    private boolean isRestart = false;
     private HistoryAdapter adapter;
     private HistoryOperator operator;
     private List<History> data;
@@ -68,11 +67,11 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
     private BroadcastReceiver restartReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            isRestart = true;
             Intent intent1 = new Intent("com.example.bookmanager.DELETE_RESTART_BOOK");
             FinishBook finishBook = (FinishBook) book;
             intent1.putExtra("book", finishBook);
             sendBroadcast(intent1);
+            finish();
         }
     };
 
@@ -112,11 +111,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
                     }
             });
         } else {
-            restartButton.setOnClickListener(view -> {
-                if (!isRestart) {
-                    DialogsHelper.showRestartConfirmDialog(this);
-                }
-            });
+            restartButton.setOnClickListener(view -> DialogsHelper.showRestartConfirmDialog(this));
         }
     }
 

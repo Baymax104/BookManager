@@ -42,4 +42,5 @@
     <string name="history_delete">删除</string>
     <string name="update_progress">修改进度</string>
     <string name="restart">重新开始</string>
+    <string name="version">版本1.0.0</string>
 </resources>

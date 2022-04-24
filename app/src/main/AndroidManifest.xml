@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -18,7 +19,12 @@
             android:roundIcon="@drawable/round_logo"
             android:supportsRtl="true"
             android:theme="@style/Theme.BookManager">
-
+        <activity
+                android:name=".controller.SettingsActivity"
+                android:exported="false" />
+        <activity
+                android:name=".controller.AboutActivity"
+                android:exported="false" />
         <activity
                 android:name=".controller.HistoryActivity"
                 android:exported="false" />

@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,9 +29,9 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class StartActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private NavigationView leftMenu;
     private ViewPager2 viewPager;
+    private DrawerLayout drawerLayout;
     private BottomNavigationView navigationView;
     private List<Fragment> viewList = new ArrayList<>();
     private FragmentAdapter adapter = new FragmentAdapter(this, viewList);
@@ -60,13 +61,24 @@ public class StartActivity extends AppCompatActivity {
                 navigationView.getMenu().getItem(position).setChecked(true);
             }
         });
+
+        leftMenu.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_about) {
+                AboutActivity.actionStart(this);
+            } else if (id == R.id.nav_settings) {
+
+            }
+            return true;
+        });
     }
 
     private void initView() {
-        toolbar = findViewById(R.id.tool_bar);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
         viewPager = findViewById(R.id.view_pager);
         leftMenu = findViewById(R.id.nav_view);
         navigationView = findViewById(R.id.nav_tab);
+        drawerLayout = findViewById(R.id.drawer_layout);
 
         viewList.add(new ProgressFragment());
         viewList.add(new FinishFragment());

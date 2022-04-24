@@ -18,10 +18,6 @@
             android:roundIcon="@drawable/round_logo"
             android:supportsRtl="true"
             android:theme="@style/Theme.BookManager">
-        <service
-                android:name=".controller.ReminderService"
-                android:enabled="true"
-                android:exported="true"></service>
 
         <activity
                 android:name=".controller.HistoryActivity"

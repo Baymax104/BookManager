@@ -120,6 +120,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         CollapsingToolbarLayout collapsingLayout = findViewById(R.id.collapse_bar);
         ImageView imageBar = findViewById(R.id.book_img_bar);
         FrameLayout progressFrameLayout = findViewById(R.id.progress_frame_layout);
+        RelativeLayout progressRelativeLayout = findViewById(R.id.progress_relative_layout);
         restartButton = findViewById(R.id.restart_button);
         historyList = findViewById(R.id.history_list);
         updateProgress = findViewById(R.id.update_progress);
@@ -148,6 +149,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         if (isFinish) {
             progressFrameLayout.setVisibility(View.GONE);
             restartButton.setVisibility(View.VISIBLE);
+            progressRelativeLayout.setVisibility(View.VISIBLE);
         } else {
             ProgressBook book1 = (ProgressBook) book;
             Resources resources = getResources();

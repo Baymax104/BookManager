@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1325" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable-xxhdpi/dialog_background_selector.xml" value="0.1295" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable-xxhdpi/layer_list_progress_bar.xml" value="0.135" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable-xxhdpi/nav_progress_selector.xml" value="0.133" />
@@ -12,6 +13,8 @@
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable-xxhdpi/shape_progress_bar.xml" value="0.135" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable-xxhdpi/shape_sheet_dialog.xml" value="0.135" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable-xxhdpi/shape_time_line.xml" value="0.1325" />
+        <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1325" />
+        <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/drawable/ic_logo.xml" value="0.1325" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_book_capture.xml" value="0.2105978260869565" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_book_edit.xml" value="0.1956521739130435" />
         <entry key="..\:/Projects/AndroidStudio/BookManager/app/src/main/res/layout/activity_book_info.xml" value="0.2105978260869565" />

@@ -67,7 +67,7 @@ public class StartActivity extends AppCompatActivity {
             if (id == R.id.nav_about) {
                 AboutActivity.actionStart(this);
             } else if (id == R.id.nav_settings) {
-
+                SettingsActivity.actionStart(this);
             }
             return true;
         });

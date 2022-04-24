@@ -2,7 +2,6 @@
     <string name="app_name">BookManager</string>
     <string name="nav_settings">设置</string>
     <string name="nav_about">关于</string>
-    <string name="nav_read">我读过的书</string>
     <string name="add_book">添加</string>
     <string name="sort">sort</string>
     <string name="edit">编辑</string>
@@ -43,4 +42,5 @@
     <string name="update_progress">修改进度</string>
     <string name="restart">重新开始</string>
     <string name="version">版本1.0.0</string>
+    <string name="export">导出</string>
 </resources>

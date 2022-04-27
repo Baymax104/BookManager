@@ -103,7 +103,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         historyList.setAdapter(adapter);
 
         if (!isFinish) {
-            adapter.setOnItemClickListener(position -> DialogsHelper.showHistoryEditDialog(this,position,this));
+            adapter.setOnItemClickListener(position -> DialogsHelper.showHistoryEditDialog(this,data,position,this));
             updateProgress.setOnClickListener(view -> {
                     History history = data.get(data.size() - 1);
                     if (history.getEndPage() != history.getPage()) {
@@ -236,7 +236,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
     @Override
     public void deleteHistory(int position) {
         History history = data.get(position);
-        if (history.getId() == 1) { // 第一条历史
+        if (history.getEndPage() == 1 || history.getEndPage() == history.getPage()) { // 开始阅读或者完成阅读
             Toast.makeText(this, "该记录不可删除", Toast.LENGTH_SHORT).show();
         } else if (position == data.size() - 1) { // 最后一条历史，需要更新进度
             Resources resources = getResources();

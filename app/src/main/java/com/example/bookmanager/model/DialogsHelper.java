@@ -84,10 +84,10 @@ public class DialogsHelper {
         return view;
     }
 
-    public static void showHistoryEditDialog(Context context, int position, IDialogCallback callback) {
+    public static void showHistoryEditDialog(Context context, List<History> data, int position, IDialogCallback callback) {
         new XPopup.Builder(context)
                 .dismissOnTouchOutside(true)
-                .asCustom(new HistoryEditDialog(context,position,callback))
+                .asCustom(new HistoryEditDialog(context,data,position,callback))
                 .show();
     }
 

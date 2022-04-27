@@ -51,7 +51,11 @@ public class InfoChangeDialog extends BottomPopupView {
         ImageView bookCover = findViewById(R.id.book_cover);
 
         if (bookCover != null) {
-            Glide.with(this).load(requestBook.getCoverUrl()).into(bookCover);
+            if (requestBook.getCoverUrl().equals("null")) {
+                Glide.with(this).load(R.drawable.no_cover).into(bookCover);
+            } else {
+                Glide.with(this).load(requestBook.getCoverUrl()).into(bookCover);
+            }
         }
         if (inputName != null) {
             inputName.setText(requestBook.getName());

@@ -18,14 +18,14 @@ import com.example.bookmanager.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private RelativeLayout export;
+    private RelativeLayout exportItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         initView();
 
-        export.setOnClickListener(view -> Toast.makeText(this, "设置", Toast.LENGTH_SHORT).show());
+        exportItem.setOnClickListener(view -> Toast.makeText(this, "设置", Toast.LENGTH_SHORT).show());
     }
 
     public static void actionStart(Context context) {
@@ -35,7 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initView() {
         Toolbar toolbar = findViewById(R.id.tool_bar);
-        export = findViewById(R.id.export_layout);
+        exportItem = findViewById(R.id.export_layout);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

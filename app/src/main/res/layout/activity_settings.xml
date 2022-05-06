@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:id="@+id/export_layout"
-                android:background="@color/bar_color">
+                android:background="@drawable/shape_setting_item">
             <ImageView
                     android:layout_width="13dp"
                     android:layout_height="13dp"
@@ -49,9 +49,11 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/img_export"
+                    android:id="@+id/txt_export"
                     android:text="@string/export"
                     android:textColor="@color/black"
                     android:layout_marginStart="15dp"/>
+
             <ImageView
                     android:layout_width="17dp"
                     android:layout_height="17dp"

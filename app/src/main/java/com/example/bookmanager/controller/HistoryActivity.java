@@ -140,7 +140,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryOperato
         collapsingLayout.setCollapsedTitleTextColor(Color.BLACK);
         if (book.getCover() != null) {
             Glide.with(this).load(book.getCover()).into(imageBar);
-        } else if (book.getCoverUrl() != null) {
+        } else if (!book.getCoverUrl().equals("null")) {
             Glide.with(this).load(book.getCoverUrl()).into(imageBar);
         } else {
             Glide.with(this).load(R.drawable.no_cover).into(imageBar);
